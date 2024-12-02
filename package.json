@@ -1,0 +1,48 @@
+{
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.20",
+        "axios": "^1.7.4",
+        "concurrently": "^9.0.1",
+        "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.4.47",
+        "tailwindcss": "^3.4.13",
+        "vite": "^5.0"
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.6.0",
+        "@johmun/vue-tags-input": "^2.1.0",
+        "@mdi/font": "^7.4.47",
+        "@popperjs/core": "^2.11.8",
+        "@vitejs/plugin-vue": "^5.1.4",
+        "@vueform/multiselect": "^2.6.11",
+        "@vueuse/core": "^11.2.0",
+        "bootstrap": "^5.3.3",
+        "bootstrap-vue-3": "^0.5.1",
+        "date-fns": "^4.1.0",
+        "filepond": "^4.32.1",
+        "filepond-plugin-file-validate-type": "^1.2.9",
+        "filepond-plugin-image-preview": "^4.6.12",
+        "json2csv": "^6.0.0-alpha.2",
+        "number-to-words": "^1.2.4",
+        "papaparse": "^5.4.1",
+        "pinia": "^2.2.6",
+        "vue": "^3.5.12",
+        "vue-draggable-next": "^2.2.1",
+        "vue-filepond": "^7.0.4",
+        "vue-kanban": "^1.8.0",
+        "vue-lite-youtube-embed": "^1.2.4",
+        "vue-multiselect": "^3.1.0",
+        "vue-pagination-2": "^3.1.0",
+        "vue-router": "^4.0.13",
+        "vue-youtube-embed": "^2.2.2",
+        "vue3-tags-input": "^1.0.12",
+        "vuedraggable": "^4.1.0",
+        "vuetify": "^3.7.3"
+    }
+}
