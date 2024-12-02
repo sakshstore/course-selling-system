@@ -34,12 +34,12 @@ export default {
     },
     methods: {
         fetchCourses() {
-            axios.get('/v1/my-courses').then(response => {
+            axios.get('/v1/courses').then(response => {
                 this.courses = response.data;
             });
         },
         viewCourseDetails(courseId) {
-            this.$router.push({ name: 'GuestCourseDetails', params: { id: courseId } });
+            this.$router.push({ name: 'GuestBuyCourseDetails', params: { id: courseId } });
         },
 
         getThumbnail(thumbnail) {

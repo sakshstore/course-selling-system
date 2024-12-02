@@ -8,49 +8,64 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-public function show()
-{
-return response()->json(Auth::user());
-}
 
-public function update(Request $request)
-{
-$request->validate([
-'firstName' => 'required|string|max:255',
-'middleName' => 'nullable|string|max:255',
-'lastName' => 'required|string|max:255',
-'dateOfBirth' => 'required|date',
-'gender' => 'required|string|max:10',
-'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
-'phoneNumber' => 'required|string|max:20',
-'street' => 'required|string|max:255',
-'city' => 'required|string|max:255',
-'state' => 'required|string|max:255',
-'postalCode' => 'required|string|max:20',
-'country' => 'required|string|max:255', 
-'preferredLanguage' => 'required|string|max:50',
-'specialAccommodations' => 'nullable|string|max:1000',
-]);
+    public function  getToken() {
+        
 
-$user = Auth::user();
-$data = $request->only([
-'firstName', 'middleName', 'lastName', 'dateOfBirth', 'gender', 'email', 'phoneNumber',
-'street', 'city', 'state', 'postalCode', 'country', 'preferredLanguage', 'specialAccommodations'
-]);
+        $user=Auth::user();
 
-$user->update($data);
+        $token = $user->createToken('API Token')->plainTextToken;
+        
+        return response()->json(['token' => $token], 200);
 
-if ($request->hasFile('profilePicture')) {
+
+    }
+    public function show()
+    {
+        return response()->json(Auth::user());
+ 
+
+
+    }
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'firstName' => 'required|string|max:255',
+            'middleName' => 'nullable|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'dateOfBirth' => 'required|date',
+            'gender' => 'required|string|max:10',
+            'email' => 'required|string|email|max:255|unique:users,email,' . Auth::id(),
+            'phoneNumber' => 'required|string|max:20',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'postalCode' => 'required|string|max:20',
+            'country' => 'required|string|max:255',
+            'preferredLanguage' => 'required|string|max:50',
+            'specialAccommodations' => 'nullable|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+        $data = $request->only([
+            'firstName', 'middleName', 'lastName', 'dateOfBirth', 'gender', 'email', 'phoneNumber',
+            'street', 'city', 'state', 'postalCode', 'country', 'preferredLanguage', 'specialAccommodations',
+        ]);
+
+        $user->update($data);
+
+        if ($request->hasFile('profilePicture')) {
 // Delete old profile picture if exists
-if ($user->profilePicture) {
-Storage::delete($user->profilePicture);
-}
+            if ($user->profilePicture) {
+                Storage::delete($user->profilePicture);
+            }
 // Store new profile picture
-$data['profilePicture'] = $request->file('profilePicture')->store('profile_pictures');
-}
+            $data['profilePicture'] = $request->file('profilePicture')->store('profile_pictures');
+        }
 
-$user->update($data);
+        $user->update($data);
 
-return response()->json($data);
-}
+        return response()->json($data);
+    }
 }

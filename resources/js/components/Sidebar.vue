@@ -60,19 +60,6 @@
     </router-link>
     </li>
     
-    <!-- Invoices -->
-    <li class="nav-item">
-    <router-link class="nav-link" :to="{ name: 'ListInvoices' }">
-    <i class="bi bi-receipt me-2"></i>Invoices
-    </router-link>
-    </li>
-    
-    <!-- Products -->
-    <li class="nav-item">
-    <router-link class="nav-link" :to="{ name: 'ProductList' }">
-    <i class="bi bi-box-seam me-2"></i>Products
-    </router-link>
-    </li>
     
     <!-- Profile -->
     <li class="nav-item">
@@ -81,12 +68,7 @@
     </router-link>
     </li>
     
-    <!-- Referrals Center -->
-    <li class="nav-item">
-    <router-link class="nav-link" :to="{ name: 'ReferralsCenter' }">
-    <i class="bi bi-person-circle me-2"></i>Referrals Center
-    </router-link>
-    </li>
+   
     
     <!-- Settings -->
     <li class="nav-item">

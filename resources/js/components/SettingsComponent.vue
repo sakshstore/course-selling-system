@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Settings</h1>
+
         <form @submit.prevent="updateSettings">
             <div class="form-group">
                 <label for="currency_symbol">Currency Symbol</label>
@@ -8,16 +9,28 @@
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
+
+        <p>API Token: <strong>{{ token }}</strong></p>
+        
     </div>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script>import { ref } from 'vue';
 import axios from 'axios';
 
 export default {
     setup() {
         const currencySymbol = ref('');
+        const token = ref(''); // Make token reactive
+
+        const fetchAPIToken = async () => {
+            try {
+                const response = await axios.get('/v1/getToken');
+                token.value = response.data.token; // Update token value
+            } catch (error) {
+                console.error('Error fetching API token:', error);
+            }
+        };
 
         const fetchSettings = async () => {
             try {
@@ -39,12 +52,17 @@ export default {
             }
         };
 
+    
         fetchSettings();
+        fetchAPIToken();
 
         return {
             currencySymbol,
+            token,  
             updateSettings,
+            
         };
     },
 };
+
 </script>

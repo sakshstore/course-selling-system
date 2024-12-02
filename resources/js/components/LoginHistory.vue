@@ -1,11 +1,15 @@
 <template>
     <div  >
         <h2 class="mb-4">Login History</h2>
-        <ul class="list-group">
-            <li class="list-group-item" v-for="login in logins" :key="login.id">
-                {{ login.ip_address }} - {{ formatTimeAgo(login.created_at) }}
-            </li>
-        </ul>
+         
+        <table class="table table-bordered">
+
+
+            <tr v-for="login in logins" :key="login.id">
+               <td> {{ login.ip_address }} </td>
+               <td> {{ formatTimeAgo(login.created_at) }} </td>
+            </tr>
+        </table>
     </div>
 </template>
 

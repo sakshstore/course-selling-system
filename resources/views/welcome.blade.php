@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-bs-theme="dark"  >
 
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>{{ config('app.name') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -38,10 +38,14 @@
         background-color: #111827 !important;
         }*/
 
+/*
+        /////////
+
+
+
 
         
  
-/* Navbar Styles */
 .topbar {
     height: 56px;
     border-bottom: 1px solid #ccc;
@@ -59,7 +63,7 @@
     color: #000;
 }
 
-/* Sidebar Styles */
+ 
 .sidebar {
     margin-top: 56px;
     border-right: 1px solid #ccc;
@@ -79,14 +83,14 @@
     color: #fff;
 }
 
-/* Footer Styles */
+ 
 .footer {
     height: 56px;
     background:  #1b2021;
     color: #fff;
 }
 
-/* Offcanvas Styles */
+ 
 .offcanvas-body {
     padding: 1rem;
 }
@@ -101,7 +105,7 @@
     color: #fff;
 }
 
-/* Media Queries */
+ 
 @media (max-width: 992px) {
     .sidebar {
         display: none;
@@ -136,6 +140,8 @@ body{
     
     background:   #1b2021;; 
 }
+
+*/
 </style>
 
 

@@ -81,6 +81,12 @@ import SearchStudent from '@/components/SearchStudent.vue';
 
 
 
+import GuestBuyCourseDetails from '@/components/GuestBuyCourseDetails.vue';
+
+import GuestBuyCourseList from '@/components/GuestBuyCourseList.vue';
+
+
+
 import ContactImport from '@/components/ContactImport.vue';
 
 import ContactExport from '@/components/ContactExport.vue';
@@ -101,9 +107,21 @@ const routes = [
   children: [
   { path: 'dashboard', name: 'GuestDashboard', component: GuestDashboard },
   { path: 'profile', name: 'StudentProfile', component: Profile },
-  { path: 'courses', name: 'GuestCourseList', component: GuestCourseList },
+  { path: 'my/courses', name: 'GuestCourseList', component: GuestCourseList },
+
+  { path: 'courses', name: 'GuestBuyCourseList', component: GuestBuyCourseList },
+
+
+  
+
+
   { path: 'chat', name: 'Chat', component: Chat },
-  { path: 'courses/:id', name: 'GuestCourseDetails', component: GuestCourseDetails },
+  { path: 'my/courses/:id', name: 'GuestCourseDetails', component: GuestCourseDetails },
+  
+  
+  { path: 'courses/:id', name: 'GuestBuyCourseDetails', component: GuestBuyCourseDetails },
+
+
   { path: 'courses/:id/playlist/:playlistId', name: 'GuestPlayList', component: GuestPlayList },
   { path: 'user-activities', name: 'UserActivity', component: UserActivity },
   { path: 'user-notifications', name: 'UserNotifications', component: UserNotifications },

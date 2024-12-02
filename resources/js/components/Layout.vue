@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- Top Bar -->
-        <div class="topbar d-flex justify-content-between align-items-center fixed-top p-2  mb-5 text-white">
+        <div class="topbar d-flex justify-content-between align-items-center fixed-top p-2  mb-5  ">
             <div class="d-flex align-items-center">
                 <img src="https://startbootstrap.com/assets/img/sb-logo.svg" alt="Logo" width="30" height="30"
                     class="me-2">
@@ -16,13 +16,13 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="sidebar d-none d-lg-block position-fixed top-0 start-0 vh-100 py-3  pb-5 text-white"
+        <div class="sidebar d-none d-lg-block position-fixed top-0 start-0 vh-100 py-3  pb-5 "
             style="width: 250px; margin-top: 56px;">
-            <Sidebar />
+            <Sidebar /> 
         </div>
 
         <!-- Offcanvas Sidebar for Mobile -->
-        <div class="offcanvas offcanvas-start text-white" tabindex="-1" id="offcanvasSidebar"
+        <div class="offcanvas offcanvas-start  " tabindex="-1" id="offcanvasSidebar"
             aria-labelledby="offcanvasSidebarLabel">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Sakshamapp</h5>
@@ -57,61 +57,16 @@ export default {
         Navbar,
         Sidebar
     },
-  
 
 
-methods: {
-toggleMenu(menuId) {
-const menu = document.getElementById(menuId);
-if (menu) {
-menu.classList.toggle('show');
-}
-}
-}
+
+    methods: {
+        toggleMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+    }
 };
 </script>
-
-<style>
-/* Add any additional styling here */
-.topbar {
-height: 56px;
-background-color: #343a40;
-}
-
-.nav-link {
-color: #ffffff;
-}
-
-.nav-link:hover {
-color: #adb5bd;
-}
-
-.footer {
-height: 56px;
-background-color: #343a40;
-color: #ffffff;
-}
-
-/* Media Queries */
-@media (max-width: 992px) {
-.sidebar {
-display: none;
-}
-
-.offcanvas {
-display: block;
-}
-
-.sakshwrapper {
-margin-left: 0;
-max-width: 100%;
-}
-}
-
-@media (min-width: 992px) {
-.sakshwrapper {
-margin-left: 250px;
-max-width: calc(100% - 250px);
-}
-}
-</style>

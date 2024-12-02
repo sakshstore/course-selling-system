@@ -156,6 +156,9 @@ $user->referral_code = $user->id;
 
 $user->save();
 
+
+
+
 $user->referral_link="locahost/".$user->referral_code;
 
 

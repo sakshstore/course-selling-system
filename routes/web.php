@@ -120,6 +120,10 @@ Route::prefix('v1')->group(function () {
         Route::get('notifications', [NotificationController::class, 'index']);
         Route::get('me', [ProfileController::class, 'show']);
 
+        Route::get('getToken', [ProfileController::class, 'getToken']);
+
+
+
         Route::get('weekly-registered-users', [UserController::class, 'getWeeklyRegisteredUsers']);
 
         Route::get('active-users', [UserController::class, 'getActiveUsers']);
@@ -259,6 +263,8 @@ Route::prefix('v1')->group(function () {
 
         // Course and Study Material Routes
         Route::resource('courses', CourseController::class);
+ 
+
         Route::prefix('courses/{course}/study-materials')->group(function () {
             Route::get('/', [StudyMaterialController::class, 'index']);
             Route::post('/', [StudyMaterialController::class, 'store']);

@@ -1,18 +1,15 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Student;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 
-
-// vishun purar 
+// vishun purar
 
 class CourseController extends Controller
 {
@@ -33,7 +30,7 @@ class CourseController extends Controller
             'price' => 'nullable|numeric',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            'status' => 'required|string|in:draft,published,archived'
+            'status' => 'required|string|in:draft,published,archived',
         ]);
 
         $course = Course::create($request->all());
@@ -58,7 +55,7 @@ class CourseController extends Controller
             'price' => 'nullable|numeric',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            'status' => 'required|string|in:draft,published,archived'
+            'status' => 'required|string|in:draft,published,archived',
         ]);
 
         $course = Course::findOrFail($id);
@@ -74,66 +71,65 @@ class CourseController extends Controller
 
         return response()->json(null, 204);
     }
-
+    
 
     public function getUserCourses()
-{
-$user = Auth::user();
-$courses =  $user->courses; // Assuming you have a relationship defined in the User model
-return response()->json($courses);
-}
+    {
+        $user = Auth::user();
 
-public function getRecommendedCourses()
-{
-$user = Auth::user();
+        $student = Student::findOrFail($user->id);
+
+
+        $courses = $student->courses; // Assuming you have a relationship defined in the User model
+        return response()->json($courses);
+    }
+
+    public function getRecommendedCourses()
+    {
+        $user = Auth::user();
 // Logic to fetch recommended courses based on user's interests
 // This is just a placeholder. Replace it with your actual recommendation logic.
-$recommendedCourses = Course::all();
-return response()->json($recommendedCourses);
-}
+        $recommendedCourses = Course::all();
+        return response()->json($recommendedCourses);
+    }
 
-
-
-
-public function purchase(Request $request, Course $course)
-{
-$user = auth()->user();
+    public function purchase(Request $request, Course $course)
+    {
+        $user = auth()->user();
 
 // Create an invoice
-$invoice = Invoice::create([
-'contact_id' => $user->contact_id, // Assuming the user has a contact_id
-'user_id' => $user->id,
-'invoice_number' => $this->generateInvoiceNumber(),
-'order_number' => $this->generateOrderNumber(),
-'invoice_date' => now(),
-'due_date' => now()->addDays(30), // Example due date
-'customer_note' => 'Thank you for your purchase!',
-'terms' => 'Payment due within 30 days.',
-'status' => 'paid',
-'file_path' => null // Assuming file_path is optional
-]);
+        $invoice = Invoice::create([
+            'contact_id' => $user->contact_id, // Assuming the user has a contact_id
+            'user_id' => $user->id,
+            'invoice_number' => $this->generateInvoiceNumber(),
+            'order_number' => $this->generateOrderNumber(),
+            'invoice_date' => now(),
+            'due_date' => now()->addDays(30), // Example due date
+            'customer_note' => 'Thank you for your purchase!',
+            'terms' => 'Payment due within 30 days.',
+            'status' => 'paid',
+            'file_path' => null, // Assuming file_path is optional
+        ]);
 
 // Attach the course as a product to the invoice
-$invoice->products()->attach($course->id, [
-'quantity' => 1,
-'description' => $course->description,
-'price' => $course->price
-]);
+        $invoice->products()->attach($course->id, [
+            'quantity' => 1,
+            'description' => $course->description,
+            'price' => $course->price,
+        ]);
 
-return response()->json(['invoice_id' => $invoice->id]);
-}
+        return response()->json(['invoice_id' => $invoice->id]);
+    }
 
+    public function getEnrollments()
+    {
+        $enrollments = DB::table('course_user')
+            ->join('users', 'course_user.student_id', '=', 'users.id')
+            ->join('courses', 'course_user.course_id', '=', 'courses.id')
+            ->select('courses.id as course_id', 'courses.title as course_title', 'users.id as student_id', 'users.name as student_name')
+            ->get();
 
-public function getEnrollments()
-{
-$enrollments = DB::table('course_user')
-->join('users', 'course_user.student_id', '=', 'users.id')
-->join('courses', 'course_user.course_id', '=', 'courses.id')
-->select('courses.id as course_id', 'courses.title as course_title', 'users.id as student_id', 'users.name as student_name')
-->get();
-
-return response()->json($enrollments);
-}
-
+        return response()->json($enrollments);
+    }
 
 }

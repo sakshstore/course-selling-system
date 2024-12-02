@@ -1,5 +1,114 @@
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
+  /*
+ body{
+    background-color: darkslategray !important;
+ }
+ .sidebar 
+ {
+    background-color: darkslategray !important;
+ }
+
+ .topbar
+ {
+    background-color: darkslategray !important;
+} 
+
+ .sidebar 
+ {
+  //  background-color: darkolivegreen !important;
+ }
+
+ .topbar
+ {
+   // background-color: darkolivegreen !important;
+} 
+
+
  
+.topbar {
+    height: 56px;
+    background-color: #343a40;
+    }
+    
+    .nav-link {
+    color: #ffffff;
+    }
+    
+    .nav-link:hover {
+    color: #adb5bd;
+    }
+    
+    .footer {
+    height: 56px;
+    background-color: #343a40;
+    color: #ffffff;
+    }
+    
  
+    @media (max-width: 992px) {
+    .sidebar {
+    display: none;
+    }
+    
+    .offcanvas {
+    display: block;
+    }
+    
+    .sakshwrapper {
+    margin-left: 0;
+    max-width: 100%;
+    }
+    }
+    
+    @media (min-width: 992px) {
+    .sakshwrapper {
+    margin-left: 250px;
+    max-width: calc(100% - 250px);
+    }
+    }
+    
+ */
+ 
+/* Add any additional styling here */
+.topbar {
+height: 56px;
+ 
+}
+
+.nav-link {
+ 
+}
+
+.nav-link:hover {
+ 
+}
+
+.footer {
+height: 56px;
+    
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+.sidebar {
+display: none;
+}
+
+.offcanvas {
+display: block;
+}
+
+.sakshwrapper {
+margin-left: 0;
+max-width: 100%;
+}
+}
+
+@media (min-width: 992px) {
+.sakshwrapper {
+margin-left: 250px;
+max-width: calc(100% - 250px);
+}
+} 

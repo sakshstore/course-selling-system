@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\AdminLoggedIn;
 use App\Events\UserLoggedIn;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -10,34 +11,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Events\AdminLoggedIn;
-
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class LoginController extends Controller
 {
-    protected $otpLength;
 
     public function __construct()
     {
-        $this->otpLength = config('auth.otp_length', 6); // Default to 6 if not set in config
+
     }
 
+    public function setup()
+    {
+/*
+$user = User::where('email',  "susheel3010@gmail.com")->first();
 
-    public function setup(){
+$user->assignRole('guide');
 
-        $user = User::where('email',  "susheel3010@gmail.com")->first();
+$user->save();
+//   Role::create(['name' => 'student']);
+// Role::create(['name' => 'auth']);
+//Role::create(['name' => 'guide']);
 
-        $user->assignRole('guide');
-        
-        $user->save();
-        Role::create(['name' => 'student']);
-        Role::create(['name' => 'auth']);
-        Role::create(['name' => 'guide']);
-
-
+ */
 
     }
     public function showLoginForm()
@@ -48,7 +43,7 @@ class LoginController extends Controller
     public function adminSendOtp(Request $request)
     {
         $request->validate(['email' => 'required|email']);
-        $otp =  $this->generateOtp();
+        $otp = $this->generateOtp();
         Cache::put('otp_' . $request->email, $otp, now()->addMinutes(10));
 
         $this->sendOtpEmail($request->email, $otp);
@@ -71,15 +66,14 @@ class LoginController extends Controller
             }
 
             Auth::loginUsingId($user->id);
-          event(new UserLoggedIn($user ));
-            event(new AdminLoggedIn($user ));
+            event(new UserLoggedIn($user));
+            event(new AdminLoggedIn($user));
 
             $user->update(['last_login_at' => now()]);
 
-            
             return response()->json([
                 'message' => 'Login successful',
-                'role' => $user->getRoleNames() ,
+                'role' => $user->getRoleNames(),
             ]);
         }
 
@@ -114,11 +108,8 @@ class LoginController extends Controller
             event(new UserLoggedIn($user));
 
             $user->update(['last_login_at' => now()]);
-          
 
-            
-            return response()->json(['message' => 'Login successful', 'user' => $user, 'role' => $user->getRoleNames() ]);
-
+            return response()->json(['message' => 'Login successful', 'user' => $user, 'role' => $user->getRoleNames()]);
 
         }
 
@@ -133,37 +124,32 @@ class LoginController extends Controller
         ]);
 
         if ($this->isValidOtp($request->email, $request->otp)) {
-            
+
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
                 $user = User::create([
-                'email' => $request->email,
-                'name' => $request->email,
-                'password' => bcrypt(Str::random(8))
+                    'email' => $request->email,
+                    'name' => $request->email,
+                    'password' => bcrypt(Str::random(8)),
                 ]);
 
                 $user->assignRole('student');
 
                 $user->assignRole('auth');
 
-                }
-                
+            }
 
             Auth::loginUsingId($user->id);
-            event(new UserLoggedIn($user ));
+            event(new UserLoggedIn($user));
 
-       $user->update(['last_login_at' => now()]);
+            $user->update(['last_login_at' => now()]);
 
-
-
-            return response()->json(['message' => 'Login successful', 'user' => $user, 'role' => $user->getRoleNames() ]);
+            return response()->json(['message' => 'Login successful', 'user' => $user, 'role' => $user->getRoleNames()]);
         }
 
         return response()->json(['message' => 'Invalid OTP'], 401);
     }
-
-    
 
     public function logout(Request $request)
     {
@@ -173,7 +159,7 @@ class LoginController extends Controller
 
     private function generateOtp()
     {
-        return 121212; // rand(100000, 999999); // You can customize this to use the $this->otpLength
+        return rand(100000, 999999);
     }
 
     private function sendOtpEmail($email, $otp)
