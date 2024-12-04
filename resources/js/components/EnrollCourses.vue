@@ -1,5 +1,5 @@
 <template>
-    <div>ddddddddddddddddddd
+    <div>
         <div class="row" v-if="purchasedcourseList.length">
             <p>Purchased Course List</p>
             <div class="col-md-2" v-for="course in purchasedcourseList" :key="course.id">
@@ -7,7 +7,7 @@
                     <img :src="getThumbnail(course.thumbnail)" class="card-img-top" alt="Course Thumbnail">
                     <div class="card-body">
                         <h5 class="card-title">{{ course.title }}</h5>
-                        <button @click="removelInCourse(course.id)" class="btn btn-primary btn-sm">Remove</button>
+                        <button @click="removeCourse(course.id)" class="btn btn-primary btn-sm">Remove</button>
                     </div>
                 </div>
             </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     props: {
@@ -46,39 +46,34 @@ export default {
         };
     },
     methods: {
-        fetchCourseList() {
+        async fetchCourseList() {
+            try {
+                const coursesResponse = await apiService.getCourses();
+                this.courseList = coursesResponse.data;
 
-
-            axios.get('/v1/courses').then(response => {
-                this.courseList = response.data;
-            });
-            axios.get(`/v1/students/${this.studentId}/courses`)
-                .then(response => {
-                    this.purchasedcourseList = response.data;
-                })
-                .catch(error => {
-                    console.error('Error fetching course list:', error);
-                });
+                const studentCoursesResponse = await apiService.getStudentCourses(this.studentId);
+                this.purchasedcourseList = studentCoursesResponse.data;
+            } catch (error) {
+                console.error('Error fetching course list:', error);
+            }
         },
-        enrollInCourse(courseId) {
-            axios.post(`/v1/students/${this.studentId}/course/enroll`, { course_id: courseId })
-                .then(response => {
-                    alert('Enrolled successfully!');
-                    this.fetchCourseList(); // Refresh the course list
-                })
-                .catch(error => {
-                    console.error('Error enrolling in course:', error);
-                });
+        async enrollInCourse(courseId) {
+            try {
+                await apiService.enrollInCourse(this.studentId, courseId);
+                alert('Enrolled successfully!');
+                this.fetchCourseList(); // Refresh the course list
+            } catch (error) {
+                console.error('Error enrolling in course:', error);
+            }
         },
-        removelInCourse(courseId) {
-            axios.delete(`/v1/students/${this.studentId}/course/remove/`, { data: { course_id: courseId } })
-                .then(response => {
-                    alert('Removed successfully!');
-                    this.fetchCourseList(); // Refresh the course list
-                })
-                .catch(error => {
-                    console.error('Error removing from course:', error);
-                });
+        async removeCourse(courseId) {
+            try {
+                await apiService.removeCourse(this.studentId, courseId);
+                alert('Removed successfully!');
+                this.fetchCourseList(); // Refresh the course list
+            } catch (error) {
+                console.error('Error removing from course:', error);
+            }
         },
         getThumbnail(thumbnail) {
             return thumbnail || 'https://picsum.photos/id/1/367/267';

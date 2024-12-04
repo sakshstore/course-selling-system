@@ -11,8 +11,6 @@
                 <button class="nav-link" id="course-list-tab" data-bs-toggle="tab" data-bs-target="#course-list"
                     type="button" role="tab" aria-controls="course-list" aria-selected="false">Course List</button>
             </li>
-
- 
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="login-history-tab" data-bs-toggle="tab"
                     data-bs-target="#login-history" type="button" role="tab" aria-controls="login-history"
@@ -37,26 +35,15 @@
                     type="button" role="tab" aria-controls="increase-score" aria-selected="false">Increase
                     Score</button>
             </li>
-
-
-
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade" id="course-list" role="tabpanel" aria-labelledby="course-list-tab">
                 <EnrollCourses :studentId="studentId" />
             </div>
-
-
-
-
-
             <div class="tab-pane fade" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
                 <!-- Invoice Content -->
                 <StudentInvoice :studentId="studentId" />
             </div>
-
-
-
             <div class="tab-pane fade show active" id="login-history" role="tabpanel"
                 aria-labelledby="login-history-tab">
                 <!-- Login History Content -->
@@ -74,22 +61,20 @@
                 <!-- Badges Content -->
                 <StudentBadges :studentId="studentId" />
             </div>
-        
-
         </div>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
-import EnrollCourses from '@/components/EnrollCourses.vue';
-import StudentLoginHistory from '@/components/StudentLoginHistory.vue';
-import StudentActivityReport from '@/components/StudentActivityReport.vue';
-import StudentPurchaseHistory from '@/components/StudentPurchaseHistory.vue';
-import StudentBadges from '@/components/StudentBadges.vue';
-import StudentIncreaseScore from '@/components/StudentIncreaseScore.vue';
- 
+import apiService from '@/apiService';
+import EnrollCourses from '@/components/guide/EnrollCourses.vue';
+import StudentLoginHistory from '@/components/guide/StudentLoginHistory.vue';
+import StudentActivityReport from '@/components/guide/StudentActivityReport.vue';
+import StudentPurchaseHistory from '@/components/guide/StudentPurchaseHistory.vue';
+import StudentBadges from '@/components/guide/StudentBadges.vue';
+import StudentIncreaseScore from '@/components/guide/StudentIncreaseScore.vue';
+
 export default {
     components: {
         EnrollCourses,
@@ -97,7 +82,7 @@ export default {
         StudentActivityReport,
         StudentPurchaseHistory,
         StudentBadges,
-        StudentIncreaseScore, 
+        StudentIncreaseScore,
     },
     data() {
         return {
@@ -110,7 +95,7 @@ export default {
     },
     methods: {
         fetchStudentDetails() {
-            axios.get(`/v1/students/${this.studentId}`)
+            apiService.fetchStudentDetails(this.studentId)
                 .then(response => {
                     this.student = response.data;
                 })

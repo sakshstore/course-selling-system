@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2 class="mb-4 ">Edit Video</h2>
+        <h2 class="mb-4">Edit Video</h2>
         <form @submit.prevent="updateVideo">
             <div class="row mb-3">
                 <div class="col-md-6">
@@ -37,14 +37,13 @@
                 <label for="tags">Tags</label>
                 <input type="text" v-model="video.tags" class="form-control" id="tags" required>
             </div>
-
             <button type="submit" class="btn btn-primary my-4">Update Video</button>
         </form>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -67,33 +66,36 @@ export default {
         this.fetchCourses();
     },
     methods: {
-        fetchVideoDetails() {
+        async fetchVideoDetails() {
             const videoId = this.$route.params.id;
-            axios.get(`/v1/video/${videoId}`).then(response => {
+            try {
+                const response = await apiService.getVideo(videoId);
                 this.video = response.data;
                 this.fetchPlaylists(this.video.course_id); // Fetch playlists for the selected course
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error fetching video details:', error);
-            });
+            }
         },
-        fetchCourses() {
-            axios.get('/v1/courses').then(response => {
+        async fetchCourses() {
+            try {
+                const response = await apiService.getCourses();
                 this.courses = response.data;
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error fetching courses:', error);
-            });
+            }
         },
-        fetchPlaylists(courseId) {
-            axios.get(`/v1/courses/${courseId}/playlists`).then(response => {
+        async fetchPlaylists(courseId) {
+            try {
+                const response = await apiService.getPlaylists(courseId);
                 this.playlists = response.data;
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error fetching playlists:', error);
-            });
+            }
         },
         onFileChange(event) {
             this.video.thumbnail = event.target.files[0];
         },
-        updateVideo() {
+        async updateVideo() {
             const formData = new FormData();
             formData.append('course_id', this.video.course_id);
             formData.append('playlist_id', this.video.playlist_id);
@@ -105,11 +107,12 @@ export default {
                 formData.append('thumbnail', this.video.thumbnail);
             }
 
-            axios.post(`/v1/video/${this.$route.params.id}`, formData).then(response => {
+            try {
+                await apiService.updateVideo(this.$route.params.id, formData);
                 this.$router.push('/my-videos');
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error updating video:', error);
-            });
+            }
         }
     }
 };

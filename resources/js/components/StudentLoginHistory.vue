@@ -12,8 +12,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
+import apiService from '@/apiService';
+
 
 export default {
     props: {
@@ -32,7 +33,7 @@ export default {
     },
     methods: {
         fetchLoginHistory() {
-            axios.get(`/v1/students/${this.studentId}/login-history`)
+            apiService.getLoginHistory(this.studentId)
                 .then(response => {
                     this.loginHistory = response.data;
                 })

@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -49,22 +49,30 @@ export default {
     },
     methods: {
         fetchCategoriesAndPriorities() {
-            axios.get('/v1/ticket-categories-priorities')
+            apiService.getCategoriesAndPriorities()
                 .then(response => {
                     this.categories = response.data.categories;
                     this.priorities = response.data.priorities;
+                })
+                .catch(error => {
+                    console.error('Error fetching categories and priorities:', error);
                 });
         },
         createTicket() {
-            axios.post('/v1/tickets', {
+            const ticketData = {
                 title: this.title,
                 description: this.description,
                 category: this.category,
                 priority: this.priority
-            }).then(response => {
-                this.$emit('ticket-created', response.data);
-                alert("Ticket created");
-            });
+            };
+            apiService.createTicket(ticketData)
+                .then(response => {
+                    this.$emit('ticket-created', response.data);
+                    alert("Ticket created");
+                })
+                .catch(error => {
+                    console.error('Error creating ticket:', error);
+                });
         }
     }
 };

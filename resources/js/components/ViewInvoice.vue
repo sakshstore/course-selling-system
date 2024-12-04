@@ -1,5 +1,5 @@
 <template>
-    <div   v-if="invoice">
+    <div v-if="invoice">
         <div class="row">
             <div class="col-md-6">
                 <img :src="companyDetails.logo" alt="Company Logo" class="img-fluid mb-3" /><br>
@@ -118,9 +118,8 @@
     </div>
 </template>
 
-
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 import { toWords } from 'number-to-words';
 
 export default {
@@ -136,7 +135,7 @@ export default {
     methods: {
         fetchInvoice() {
             const id = this.$route.params.id;
-            axios.get(`/v1/invoices/${id}`).then(response => {
+            apiService.getInvoice(id).then(response => {
                 this.invoice = response.data.invoice;
                 this.companyDetails = response.data.companyDetails;
             }).catch(error => {

@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -146,28 +146,32 @@ export default {
         }
     },
     methods: {
-        fetchCourse(id) {
-            axios.get(`/v1/courses/${id}`).then(response => {
+        async fetchCourse(id) {
+            try {
+                const response = await apiService.getCourseDetails(id);
                 this.course = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching course:', error);
+            }
         },
         onFileChange(event) {
             this.course.thumbnail = event.target.files[0];
         },
-        saveCourse() {
+        async saveCourse() {
             const formData = new FormData();
             for (const key in this.course) {
                 formData.append(key, this.course[key]);
             }
 
-            if (this.isEdit) {
-                axios.put(`/courses/${this.$route.params.id}`, formData).then(response => {
-                    this.$router.push({ name: 'CourseList' });
-                });
-            } else {
-                axios.post('/v1/courses', formData).then(response => {
-                    this.$router.push({ name: 'CourseList' });
-                });
+            try {
+                if (this.isEdit) {
+                    await apiService.saveCourse(this.$route.params.id, formData);
+                } else {
+                    await apiService.saveCourse(null, formData);
+                }
+                this.$router.push({ name: 'CourseList' });
+            } catch (error) {
+                console.error('Error saving course:', error);
             }
         },
         nextStep() {
@@ -182,4 +186,4 @@ export default {
         }
     }
 };
-</script> 
+</script>

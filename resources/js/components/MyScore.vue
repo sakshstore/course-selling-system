@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div v-if="score !== null" class="alert ">
+        <div v-if="score !== null" class="alert alert-info">
             <h3>Total Score: {{ score }}</h3>
         </div>
         <div v-if="score !== null && score > 0">
-            <h3 class="mb-4 r">Score History</h3>
+            <h3 class="mb-4">Score History</h3>
             <ul class="list-group mb-4">
                 <li v-for="history in scoreHistory" :key="history.id" class="list-group-item">
                     <div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -34,15 +34,21 @@ export default {
         this.fetchScoreHistory();
     },
     methods: {
-        fetchScore() {
-            axios.get('/v1/leaderboard/my-score').then(response => {
+        async fetchScore() {
+            try {
+                const response = await apiService.getMyScore();
                 this.score = response.data.score;
-            });
+            } catch (error) {
+                console.error('Error fetching score:', error);
+            }
         },
-        fetchScoreHistory() {
-            axios.get('/v1/leaderboard/my-score-history').then(response => {
+        async fetchScoreHistory() {
+            try {
+                const response = await apiService.getMyScoreHistory();
                 this.scoreHistory = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching score history:', error);
+            }
         }
     }
 };

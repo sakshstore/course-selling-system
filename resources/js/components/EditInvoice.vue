@@ -1,5 +1,5 @@
 <template>
-    <div  v-if="invoice">
+    <div v-if="invoice">
         <!-- Company Details Section -->
         <div class="row">
             <div class="col-md-6">
@@ -32,32 +32,30 @@
                 </address>
             </div>
             <div class="col-md-12">
-
                 <div class="row">
-                <h5>Invoice Details</h5>
-                <div class="mb-3  col-md-4">
-                    <label for="invoiceNumber" class="form-label">Invoice Number</label>
-                    <input v-model="invoice.invoice_number" type="text" class="form-control" id="invoiceNumber"
-                        required />
+                    <h5>Invoice Details</h5>
+                    <div class="mb-3 col-md-4">
+                        <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                        <input v-model="invoice.invoice_number" type="text" class="form-control" id="invoiceNumber"
+                            required />
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="orderNumber" class="form-label">Order Number</label>
+                        <input v-model="invoice.order_number" type="text" class="form-control" id="orderNumber" />
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="status" class="form-label">Status</label>
+                        <select v-model="invoice.status" class="form-control" id="status" required>
+                            <option value="draft">Draft</option>
+                            <option value="sent">Sent</option>
+                            <option value="viewed">Viewed</option>
+                            <option value="paid">Paid</option>
+                            <option value="partially_paid">Partially Paid</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3  col-md-4">
-                    <label for="orderNumber" class="form-label">Order Number</label>
-                    <input v-model="invoice.order_number" type="text" class="form-control" id="orderNumber" />
-                </div>
-                <div class="mb-3  col-md-4">
-                    <label for="status" class="form-label">Status</label>
-                    <select v-model="invoice.status" class="form-control" id="status" required>
-                        <option value="draft">Draft</option>
-                        <option value="sent">Sent</option>
-                        <option value="viewed">Viewed</option>
-                        <option value="paid">Paid</option>
-                        <option value="partially_paid">Partially Paid</option>
-                        <option value="overdue">Overdue</option>
-                        <option value="cancelled">Cancelled</option>
-                    </select>
-                </div>
-
-            </div>
                 <button type="button" class="btn btn-primary mt-4" @click="updateInvoiceDetails">Update Invoice
                     Details</button>
             </div>
@@ -68,14 +66,12 @@
             <thead>
                 <tr>
                     <th>Invoice Date</th>
-                 
                     <th>Due Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><input v-model="invoice.invoice_date" type="date" class="form-control" /></td>
-                
                     <td><input v-model="invoice.due_date" type="date" class="form-control" /></td>
                 </tr>
             </tbody>
@@ -146,11 +142,12 @@
         <button type="button" class="btn btn-primary mt-4" @click="updateFile">Update File</button>
     </div>
 </template>
+
+
+
 <script>
 
-
-
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -169,146 +166,105 @@ export default {
         this.fetchContacts();
     },
     methods: {
-        fetchInvoice() {
+        async fetchInvoice() {
             const id = this.$route.params.id;
-            axios.get(`/v1/invoices/${id}`).then(response => {
+            try {
+                const response = await apiService.getInvoice(id);
                 this.invoice = response.data.invoice;
                 this.companyDetails = response.data.companyDetails;
                 this.updateSelectedContact();
-            }).catch(error => {
+            } catch (error) {
                 console.error(error);
-            });
+            }
         },
-        fetchProducts() {
-            axios.get('/v1/products').then(response => {
+        async fetchProducts() {
+            try {
+                const response = await apiService.getProducts();
                 this.allProducts = response.data;
-            }).catch(error => {
+            } catch (error) {
                 console.error(error);
-            });
+            }
         },
-        fetchContacts() {
-            axios.get('/v1/contacts_list').then(response => {
+        async fetchContacts() {
+            try {
+                const response = await apiService.getContacts();
                 this.contacts = response.data;
-            }).catch(error => {
+            } catch (error) {
                 console.error(error);
-            });
+            }
         },
         updateSelectedContact() {
             this.selectedContact = this.contacts.find(contact => contact.id === this.invoice.contact_id) || {};
         },
         updateContactDetails() {
             this.updateSelectedContact();
-            this.updateInvoiceDetails();
+        },
+        async updateInvoiceDetails() {
+            try {
+                await apiService.updateInvoiceDetails(this.invoice.id, this.invoice);
+                alert('Invoice details updated successfully');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async updateInvoiceDatesAndTerms() {
+            try {
+                await apiService.updateInvoiceDatesAndTerms(this.invoice.id, {
+                    invoice_date: this.invoice.invoice_date,
+                    due_date: this.invoice.due_date
+                });
+                alert('Invoice dates and terms updated successfully');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async updateCustomerNoteAndTerms() {
+            try {
+                await apiService.updateCustomerNoteAndTerms(this.invoice.id, {
+                    customer_note: this.invoice.customer_note,
+                    terms: this.invoice.terms
+                });
+                alert('Customer note and terms updated successfully');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async updateProducts() {
+            try {
+                await apiService.updateProducts(this.invoice.id, this.invoice.products);
+                alert('Products updated successfully');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async updateFile() {
+            const formData = new FormData();
+            formData.append('file', this.file);
+            try {
+                await apiService.updateFile(this.invoice.id, formData);
+                alert('File updated successfully');
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        handleFileUpload(event) {
+            this.file = event.target.files[0];
         },
         addProduct() {
-            this.invoice.products.push({ id: '', name: '', pivot: { quantity: 1, description: '', showDescription: false }, price: 0 });
+            this.invoice.products.push({ id: '', pivot: { description: '', quantity: 1 }, price: 0 });
         },
         removeProduct(index) {
             this.invoice.products.splice(index, 1);
         },
         updateProductDetails(index) {
-            const selectedProduct = this.allProducts.find(prod => prod.id === this.invoice.products[index].id);
-            if (selectedProduct) {
-                this.invoice.products[index].price = selectedProduct.price;
-                this.invoice.products[index].pivot.description = selectedProduct.description;
+            const product = this.allProducts.find(prod => prod.id === this.invoice.products[index].id);
+            if (product) {
+                this.invoice.products[index].price = product.price;
             }
-        },
-        updateProducts() {
-            const productsData = this.invoice.products.map(product => ({
-                id: product.id,
-                name: product.name,
-                quantity: product.pivot.quantity,
-                description: product.pivot.description,
-                price: product.price
-            }));
-
-            axios.put(`/v1/invoices/${this.invoice.id}/products`, { products: productsData })
-                .then(response => {
-                    alert('Products updated successfully!');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        updateInvoiceDetails() {
-            const detailsData = {
-                contact_id: this.invoice.contact_id,
-                invoice_number: this.invoice.invoice_number,
-                order_number: this.invoice.order_number,
-                invoice_date: this.invoice.invoice_date,
-                due_date: this.invoice.due_date,
-                status: this.invoice.status
-            };
-
-            axios.put(`/v1/invoices/${this.invoice.id}/details`, detailsData)
-                .then(response => {
-                    alert('Invoice details updated successfully!');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        updateInvoiceDatesAndTerms() {
-            const datesTermsData = {
-                invoice_date: this.invoice.invoice_date,
-                terms: this.invoice.terms,
-                due_date: this.invoice.due_date
-            };
-
-            axios.put(`/v1/invoices/${this.invoice.id}/dates-terms`, datesTermsData)
-                .then(response => {
-                    alert('Invoice dates and terms updated successfully!');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        updateCustomerNoteAndTerms() {
-            const noteTermsData = {
-                customer_note: this.invoice.customer_note,
-                terms: this.invoice.terms
-            };
-
-            axios.put(`/v1/invoices/${this.invoice.id}/note-terms`, noteTermsData)
-                .then(response => {
-                    alert('Customer note and terms updated successfully!');
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-        handleFileUpload(event) {
-            this.file = event.target.files[0];
-        },
-        updateFile() {
-            const formData = new FormData();
-            if (this.file) {
-                formData.append('file', this.file);
-            }
-
-            axios.post(`/v1/invoices/${this.invoice.id}/file`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then(response => {
-                alert('File updated successfully!');
-            }).catch(error => {
-                console.error(error);
-            });
-        }
-    },
-    computed: {
-        subtotal() {
-            return this.invoice.products.reduce((sum, product) => {
-                return sum + (product.price * product.pivot.quantity);
-            }, 0).toFixed(2);
-        },
-        total() {
-            const tax = this.invoice.tax ? parseFloat(this.invoice.tax) : 0;
-            return (parseFloat(this.subtotal) + tax).toFixed(2);
         }
     }
 };
+
 
 
 </script>

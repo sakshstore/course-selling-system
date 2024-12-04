@@ -52,16 +52,9 @@
     </div>
 </template>
 
-
-
-
 <script>
-
-
-
-
-import axios from 'axios';
 import Vue3TagsInput from 'vue3-tags-input';
+import apiService from '@/apiService';
 
 export default {
     components: {
@@ -86,18 +79,8 @@ export default {
         async saveLead() {
             this.loading = true;
             try {
-
-
-
-
                 const leadData = { ...this.lead };
-
-
-                if (this.leadId) {
-                    await axios.put(`/v1/leads/${this.leadId}`, leadData);
-                } else {
-                    await axios.post('/v1/leads', leadData);
-                }
+                await apiService.saveLead(leadData);
                 this.$emit('saved');
                 this.resetForm();
             } catch (error) {
@@ -110,14 +93,10 @@ export default {
             if (this.leadId) {
                 this.loading = true;
                 try {
-                    const response = await axios.get(`/v1/leads/${this.leadId}`);
+                    const response = await apiService.getLead(this.leadId);
                     const lead = response.data;
                     // Ensure tags is an array
-
-
                     lead.tags = Array.isArray(lead.tags) ? lead.tags.map(tag => tag.name) : [];
-
-
                     this.lead = lead;
                 } catch (error) {
                     console.error('Error fetching lead:', error);
@@ -128,8 +107,6 @@ export default {
         },
         updateTags(newTags) {
             this.lead.tags = newTags;
-
-
         },
         resetForm() {
             this.lead = {
@@ -152,12 +129,10 @@ export default {
         }
     }
 };
-
 </script>
 
 <style>
 .v3ti .v3ti-new-tag {
-
     background-color: var(--bs-body-bg) !important;
 }
 </style>

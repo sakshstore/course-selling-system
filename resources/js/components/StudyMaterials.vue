@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="mb-4">Study Materials for {{ course.title }}</h2>
 
         <button type="button" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#addMaterialModal">
@@ -8,7 +8,7 @@
         <div v-for="(materials, chapter) in groupedMaterials" :key="chapter" class="mb-4">
             <h3 class="mb-3">Chapter: {{ chapter }}</h3>
             <ul class="list-group">
-                <li v-for="material in materials" :key="material.id" class="list-group-item border-5  ">
+                <li v-for="material in materials" :key="material.id" class="list-group-item border-5">
                     <h5 class="mb-1">{{ material.title }}</h5>
                     <p class="mb-1">{{ material.description }}</p>
                     <a :href="`/storage/${material.file_path}`" target="_blank"
@@ -16,7 +16,6 @@
                 </li>
             </ul>
         </div>
-      
 
         <!-- Modal -->
         <div class="modal fade" id="addMaterialModal" tabindex="-1" aria-labelledby="addMaterialModalLabel"
@@ -58,7 +57,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -92,13 +91,13 @@ export default {
     methods: {
         fetchCourse() {
             const courseId = this.$route.params.courseId;
-            axios.get(`/v1/courses/${courseId}`).then(response => {
+            apiService.getCourse(courseId).then(response => {
                 this.course = response.data;
             });
         },
         fetchStudyMaterials() {
             const courseId = this.$route.params.courseId;
-            axios.get(`/v1/courses/${courseId}/study-materials`).then(response => {
+            apiService.getStudyMaterials(courseId).then(response => {
                 this.studyMaterials = response.data;
             });
         },
@@ -115,7 +114,7 @@ export default {
             formData.append('uploaded_by', 1); // Replace with actual user ID
             formData.append('visibility', 'public'); // Default visibility
 
-            axios.post(`/courses/${courseId}/study-materials`, formData).then(response => {
+            apiService.addStudyMaterial(courseId, formData).then(response => {
                 this.studyMaterials.push(response.data);
                 this.newMaterial = { title: '', description: '', chapter: '', file: null };
                 // Close the modal

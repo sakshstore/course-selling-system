@@ -55,7 +55,7 @@
 
 <script>
 import Papa from 'papaparse';
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -76,7 +76,7 @@ export default {
     methods: {
         async fetchImportFields() {
             try {
-                const response = await axios.get('/v1/getContactfields');
+                const response = await apiService.getContactFields();
                 this.tableColumns = response.data[0];
                 this.tableFields = response.data[1];
             } catch (error) {
@@ -119,7 +119,7 @@ export default {
         },
         async importData() {
             try {
-                const response = await axios.post('/v1/importContacts', this.mappedData);
+                const response = await apiService.importContacts(this.mappedData);
                 this.importResult = response.data; // Store the import result
                 console.log('Import successful:', response.data);
             } catch (error) {

@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-primary">Ticket Management</h2>
             <button class="btn btn-success" @click="showCreateTicketModal = true">Create New Ticket</button>
@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -103,7 +103,7 @@ export default {
         async fetchTickets() {
             this.loading = true;
             try {
-                const response = await axios.get('/v1/tickets_list');
+                const response = await apiService.getTickets();
                 this.tickets = response.data;
             } catch (error) {
                 console.error('Error fetching tickets:', error);
@@ -113,7 +113,7 @@ export default {
         },
         async fetchCategoriesAndPriorities() {
             try {
-                const response = await axios.get('/v1/ticket-categories-priorities');
+                const response = await apiService.getCategoriesAndPriorities();
                 this.categories = response.data.categories;
                 this.priorities = response.data.priorities;
             } catch (error) {
@@ -134,11 +134,7 @@ export default {
             }
 
             try {
-                const response = await axios.post('/v1/tickets', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
+                const response = await apiService.createTicket(formData);
                 this.tickets.push(response.data);
                 this.showCreateTicketModal = false;
                 this.newTicket = { title: '', description: '', category: '', priority: '', attachment: null };
@@ -148,7 +144,7 @@ export default {
         },
         async closeTicket(id) {
             try {
-                await axios.put(`/v1/tickets/${id}`, { status: 'closed' });
+                await apiService.closeTicket(id);
                 this.fetchTickets();
             } catch (error) {
                 console.error('Error closing ticket:', error);
@@ -157,20 +153,3 @@ export default {
     }
 };
 </script>
-
-<style>
-.list-group-item {
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 10px;
-}
-
-.badge {
-    font-size: 0.9em;
-}
-
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
-</style>

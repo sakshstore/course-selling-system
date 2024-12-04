@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     props: ['contactId'],
@@ -51,20 +51,24 @@ export default {
                 notes: this.notes,
             };
 
-            if (this.contactId) {
-                await axios.put(`/v1/contacts/${this.contactId}`, contactData);
-            } else {
-                await axios.post('/v1/contacts', contactData);
+            try {
+                await apiService.saveContact(this.contactId, contactData);
+                this.$emit('saved');
+                this.resetForm();
+            } catch (error) {
+                console.error('Error saving contact:', error);
             }
-            this.$emit('saved');
-            this.resetForm();
         },
         async fetchContact() {
             if (this.contactId) {
-                const response = await axios.get(`/v1/contacts/${this.contactId}`);
-                this.contact = response.data;
-                this.tags = response.data.tags.map(tag => tag.name).join(', ');
-                this.notes = response.data.notes.map(note => note.content).join('\n');
+                try {
+                    const response = await apiService.fetchContact(this.contactId);
+                    this.contact = response.data;
+                    this.tags = response.data.tags.map(tag => tag.name).join(', ');
+                    this.notes = response.data.notes.map(note => note.content).join('\n');
+                } catch (error) {
+                    console.error('Error fetching contact:', error);
+                }
             }
         },
         resetForm() {

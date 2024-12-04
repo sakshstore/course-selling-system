@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h2 class="mb-4">{{ course.title }}</h2>
         <p>{{ course.description }}</p>
         <h3>Study Materials</h3>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -47,26 +47,35 @@ export default {
         this.fetchPlaylists();
     },
     methods: {
-        fetchCourseDetails() {
+        async fetchCourseDetails() {
             const courseId = this.$route.params.id;
-            axios.get(`/v1/courses/${courseId}`).then(response => {
+            try {
+                const response = await apiService.getCourseDetails(courseId);
                 this.course = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching course details:', error);
+            }
         },
-        fetchPlaylists() {
+        async fetchPlaylists() {
             const courseId = this.$route.params.id;
-            axios.get(`/v1/courses/${courseId}/playlists`).then(response => {
+            try {
+                const response = await apiService.getPlaylists(courseId);
                 this.playlists = response.data;
                 this.playlists.forEach(playlist => {
                     this.fetchVideos(playlist);
                 });
-            });
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
+            }
         },
-        fetchVideos(playlist) {
+        async fetchVideos(playlist) {
             const courseId = this.$route.params.id;
-            axios.get(`/v1/courses/${courseId}/playlists/${playlist.id}/videos`).then(response => {
+            try {
+                const response = await apiService.getVideos(courseId, playlist.id);
                 this.$set(playlist, 'videos', response.data);
-            });
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+            }
         }
     }
 };

@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -59,7 +59,7 @@ export default {
     methods: {
         async fetchImportFields() {
             try {
-                const response = await axios.get('/v1/getStudentImportfields');
+                const response = await apiService.getImportFields();
                 this.tableColumns = response.data[0];
                 this.tableFields = response.data[1];
             } catch (error) {
@@ -68,9 +68,9 @@ export default {
         },
         async fetchStudentData() {
             try {
-                const response = await axios.post('/v1/getFilteredStudents', { columns: this.selectedColumns });
+                const response = await apiService.getFilteredStudents(this.selectedColumns);
                 this.fullStudentData = response.data;
-                this.studentData = response.data; // Display the first 20 students
+                this.studentData = response.data; // Display the first 5 students
             } catch (error) {
                 console.error('Error fetching student data:', error);
             }

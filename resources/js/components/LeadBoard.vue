@@ -2,24 +2,19 @@
     <div>
         <h1 class="mb-4">Leads
             <button @click="openCreateModal" class="btn btn-info btn-sm me-3">Add Lead</button>
-
             <button @click="createDummyData" class="btn btn-info btn-sm me-3">Create Dummy Data</button>
-
-
             <router-link :to="{ name: 'ContactImport' }" class="btn btn-info btn-sm me-3">
                 <i class="fas fa-file-import"></i>Import
             </router-link>
             <router-link :to="{ name: 'ContactExport' }" class="btn btn-info btn-sm me-3">
                 <i class="fas fa-file-export"></i>Export
             </router-link>
-
             <button @click="deleteAll" class="btn btn-danger btn-sm me-3">Delete All</button>
-
         </h1>
         <div class="row">
             <div class="col-md-3" v-for="(column, index) in columns" :key="index" :data-status="column.status">
                 <div class="card mb-4">
-                    <div class="card-header  d-flex justify-content-between align-items-center">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">{{ column.status }}</h5>
                     </div>
                     <div class="card-body p-2">
@@ -32,10 +27,8 @@
                                     <p class="mb-1">{{ lead.phone }}</p>
                                     <p class="mb-1"><span class="badge bg-info">{{ lead.status }}</span></p>
                                     <div class="dropdown position-absolute top-0 end-0 me-2 mt-2">
-                                        <button class="btn btn-link text-white   p-0" type="button"
+                                        <button class="btn btn-link text-white p-0" type="button"
                                             id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-
-
                                             <i class="fa-solid fa-bars"></i>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -70,10 +63,10 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { defineComponent } from 'vue';
 import { VueDraggableNext } from 'vue-draggable-next';
 import LeadForm from './LeadForm.vue';
+import apiService from '@/apiService';
 
 export default defineComponent({
     components: { LeadForm, VueDraggableNext },
@@ -87,13 +80,13 @@ export default defineComponent({
     },
     methods: {
         async fetchLeadStatuses() {
-            const response = await axios.get('/v1/get_lead_status');
+            const response = await apiService.getLeadStatuses();
             const statuses = response.data;
             this.columns = statuses.map(status => ({ status, items: [] }));
             this.fetchLeads();
         },
         async fetchLeads() {
-            const response = await axios.get('/v1/leads_list');
+            const response = await apiService.getLeads();
             const leads = response.data;
             this.columns.forEach(column => {
                 column.items = leads.filter(lead => lead.status === column.status);
@@ -105,7 +98,7 @@ export default defineComponent({
             this.showCreateLeadModal = true;
         },
         async deleteLead(id) {
-            await axios.delete(`/v1/leads/${id}`);
+            await apiService.deleteLead(id);
             this.fetchLeads();
         },
         openCreateModal() {
@@ -128,16 +121,15 @@ export default defineComponent({
             const lead = this.columns.flatMap(column => column.items).find(item => item.id == leadId);
             if (lead && lead.status !== newStatus) {
                 lead.status = newStatus;
-                await axios.put(`/v1/leads/updateStatus/${lead.id}`, { status: newStatus });
+                await apiService.updateLeadStatus(lead.id, newStatus);
             }
         },
         async createDummyData() {
-            await axios.post('/v1/leads/bulk_create');
+            await apiService.createDummyData();
             this.fetchLeads();
         },
-
         async deleteAll() {
-            await axios.delete('/v1/leads/delete_all');
+            await apiService.deleteAllLeads();
             this.fetchLeads();
         }
     },

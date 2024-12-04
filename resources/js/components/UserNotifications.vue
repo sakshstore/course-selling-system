@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 import { formatDistanceToNow } from 'date-fns';
 
 export default {
@@ -24,9 +24,12 @@ export default {
     },
     methods: {
         fetchNotifications() {
-            axios.get('/v1/notifications')
+            apiService.getNotifications()
                 .then(response => {
                     this.notifications = response.data;
+                })
+                .catch(error => {
+                    console.error('Error fetching notifications:', error);
                 });
         },
         formatTimeAgo(date) {

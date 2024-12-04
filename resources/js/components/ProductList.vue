@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h2 class="mb-4">Products</h2>
         <button class="btn btn-primary mb-3" @click="createProduct">Create Product</button>
         <table class="table table-bordered">
@@ -28,7 +28,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+
+
+import apiService from '@/apiService';
+
 
 export default {
     data() {
@@ -40,14 +43,13 @@ export default {
         this.fetchProducts();
     },
     methods: {
-        fetchProducts() {
-            axios.get('/v1/products')
-                .then(response => {
-                    this.products = response.data;
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+        async fetchProducts() {
+            try {
+                const response = await apiService.getProducts();
+                this.products = response.data;
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
         },
         createProduct() {
             this.$router.push('/guide/products/create');
@@ -58,15 +60,14 @@ export default {
         editProduct(id) {
             this.$router.push(`/guide/products/${id}/edit`);
         },
-        deleteProduct(id) {
+        async deleteProduct(id) {
             if (confirm('Are you sure you want to delete this product?')) {
-                axios.delete(`/products/${id}`)
-                    .then(() => {
-                        this.fetchProducts();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                try {
+                    await apiService.deleteProduct(id);
+                    this.fetchProducts();
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                }
             }
         }
     }

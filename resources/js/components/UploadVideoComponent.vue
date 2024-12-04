@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="mb-4 text-center">Upload Video</h2>
         <form @submit.prevent="uploadVideo" class="needs-validation" novalidate>
             <div class="row mb-3">
@@ -15,12 +15,8 @@
                 <div class="col-md-6">
                     <label for="playlist_id" class="form-label">Playlist</label>
                     <select v-model="video.playlist_id" class="form-select" id="playlist_id" required>
-
-
                         <option v-for="playlist in playlists" :key="playlist.id" :value="playlist.id">{{ playlist.name
                             }}</option>
-
-
                     </select>
                     <div class="invalid-feedback">Please select a playlist.</div>
                 </div>
@@ -57,9 +53,6 @@
             </div>
         </form>
 
-
-
-
         <h3 class="mt-5 text-center">Last 3 Uploaded Videos</h3>
         <div class="row">
             <div v-for="video in lastThreeVideos" :key="video.id" class="col-md-4 mb-4">
@@ -77,7 +70,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -101,17 +94,13 @@ export default {
     },
     methods: {
         fetchCourses() {
-            axios.get('/v1/courses').then(response => {
+            apiService.getCourses().then(response => {
                 this.courses = response.data;
             });
         },
         fetchPlaylists(courseId) {
-            axios.get(`/v1/courses/${courseId}/playlists`).then(response => {
+            apiService.getPlaylists(courseId).then(response => {
                 this.playlists = response.data;
-
-                console.log(this.playlists);
-
-
             });
         },
         uploadVideo() {
@@ -120,7 +109,7 @@ export default {
                 formData.append(key, this.video[key]);
             }
             formData.append('video_file', this.video.video_file); // Append the video file
-            axios.post('/v1/videos', formData).then(response => {
+            apiService.uploadVideo(formData).then(response => {
                 alert('Video uploaded successfully!');
                 this.resetForm();
                 this.fetchLastThreeVideos(); // Refresh the list of last three videos
@@ -130,7 +119,7 @@ export default {
             });
         },
         fetchLastThreeVideos() {
-            axios.get('/v1/videos/latest').then(response => {
+            apiService.getLastThreeVideos().then(response => {
                 this.lastThreeVideos = response.data;
             }).catch(error => {
                 console.error('Error fetching last three videos:', error);
@@ -157,24 +146,4 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* Add any additional styling here */
-.card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-}
-
-.card:hover {
-    transform: scale(1.05);
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-}
-
-.card-body {
-    text-align: center;
-}
-</style>
+ 

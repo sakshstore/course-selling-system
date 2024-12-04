@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h2>Profile</h2>
         <form @submit.prevent="updateProfile">
             <div class="mb-3">
@@ -56,7 +56,7 @@
             </div>
             <div class="mb-3">
                 <label for="profilePicture" class="form-label">Profile Picture</label>
-                <input type="file" @change="handleFileUpload" id="profilePicture" />
+                <input type="file" @change="handleFileUpload" id="profilePicture">
             </div>
             <div class="mb-3">
                 <label for="preferredLanguage" class="form-label">Preferred Language</label>
@@ -77,54 +77,66 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, onMounted } from 'vue';
+
+
+import apiService from '@/apiService';
+
+
 
 export default {
-    data() {
-        return {
-            user: {
-                firstName: '',
-                middleName: '',
-                lastName: '',
-                dateOfBirth: '',
-                gender: '',
-                email: '',
-                phoneNumber: '',
-                street: '',
-                city: '',
-                state: '',
-                postalCode: '',
-                country: '',
-                profilePicture: '',
-                preferredLanguage: '',
-                specialAccommodations: ''
+    setup() {
+        const user = ref({
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            dateOfBirth: '',
+            gender: '',
+            email: '',
+            phoneNumber: '',
+            street: '',
+            city: '',
+            state: '',
+            postalCode: '',
+            country: '',
+            profilePicture: '',
+            preferredLanguage: '',
+            specialAccommodations: ''
+        });
+
+        const fetchProfile = async () => {
+            try {
+                const response = await apiService.getProfile();
+                user.value = response.data;
+            } catch (error) {
+                console.error('Error fetching profile:', error);
             }
         };
-    },
-    methods: {
-        async fetchProfile() {
+
+        const updateProfile = async () => {
             try {
-                const response = await axios.get('/v1/me');
-                this.user = response.data;
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async updateProfile() {
-            try {
-                await axios.put('/v1/profile', this.user);
+                await apiService.updateProfile(user.value);
                 alert('Profile updated successfully!');
             } catch (error) {
-                console.error(error);
+                console.error('Error updating profile:', error);
             }
-        },
-        handleFileUpload(event) {
+        };
+
+        const handleFileUpload = (event) => {
             const file = event.target.files[0];
-            this.user.profilePicture = file;
-        }
+            user.value.profilePicture = file;
+        };
+
+        onMounted(() => {
+            fetchProfile();
+        });
+
+        return {
+            user,
+            fetchProfile,
+            updateProfile,
+            handleFileUpload,
+        };
     },
-    mounted() {
-        this.fetchProfile();
-    }
 };
 </script>

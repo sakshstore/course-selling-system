@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -68,37 +68,52 @@ export default {
         this.fetchEvents();
     },
     methods: {
-        fetchEventScores() {
-            axios.get('/v1/event-scores').then(response => {
+        async fetchEventScores() {
+            try {
+                const response = await apiService.getEventScores();
                 this.eventScores = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching event scores:', error);
+            }
         },
-        fetchEvents() {
-            axios.get('/v1/events').then(response => {
+        async fetchEvents() {
+            try {
+                const response = await apiService.getEvents();
                 this.events = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
         },
-        createEventScore() {
-            axios.post('/v1/event-scores', this.newEventScore).then(response => {
+        async createEventScore() {
+            try {
+                const response = await apiService.createEventScore(this.newEventScore);
                 this.eventScores.push(response.data);
                 this.newEventScore = { event_name: '', score: 0 };
                 this.showCreateForm = false;
-            });
+            } catch (error) {
+                console.error('Error creating event score:', error);
+            }
         },
         editEventScore(eventScore) {
             this.editingEventScore = { ...eventScore };
         },
-        updateEventScore() {
-            axios.put(`/v1/event-scores/${this.editingEventScore.id}`, this.editingEventScore).then(response => {
+        async updateEventScore() {
+            try {
+                const response = await apiService.updateEventScore(this.editingEventScore.id, this.editingEventScore);
                 const index = this.eventScores.findIndex(es => es.id === this.editingEventScore.id);
                 this.$set(this.eventScores, index, response.data);
                 this.editingEventScore = null;
-            });
+            } catch (error) {
+                console.error('Error updating event score:', error);
+            }
         },
-        deleteEventScore(id) {
-            axios.delete(`/v1/event-scores/${id}`).then(() => {
+        async deleteEventScore(id) {
+            try {
+                await apiService.deleteEventScore(id);
                 this.eventScores = this.eventScores.filter(eventScore => eventScore.id !== id);
-            });
+            } catch (error) {
+                console.error('Error deleting event score:', error);
+            }
         }
     }
 };

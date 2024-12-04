@@ -1,5 +1,5 @@
 <template>
-    <div  > 
+    <div>
         <h1>Leads</h1>
         <button @click="openCreateModal" class="btn btn-primary mb-3">Add Lead</button>
 
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 import LeadForm from './LeadForm.vue';
 
 export default {
@@ -46,8 +46,12 @@ export default {
     },
     methods: {
         async fetchLeads() {
-            const response = await axios.get('/v1/leads_list');
-            this.leads = response.data;
+            try {
+                const response = await apiService.getLeads();
+                this.leads = response.data;
+            } catch (error) {
+                console.error('Error fetching leads:', error);
+            }
         },
         editLead(lead) {
             this.selectedLeadId = lead.id;
@@ -55,8 +59,12 @@ export default {
             this.showCreateLeadModal = true;
         },
         async deleteLead(id) {
-            await axios.delete(`/v1/leads/${id}`);
-            this.fetchLeads();
+            try {
+                await apiService.deleteLead(id);
+                this.fetchLeads();
+            } catch (error) {
+                console.error('Error deleting lead:', error);
+            }
         },
         openCreateModal() {
             this.selectedLeadId = null;

@@ -1,12 +1,11 @@
 <template>
-    <div class=" ">
+    <div>
         <h2 class="mb-4">Chat</h2>
         <div class="chat-history mb-3" ref="chatHistory">
             <ul class="list-group">
-                <li v-for="chat in chats" :key="chat.id" class="list-group-item   border-2    "
+                <li v-for="chat in chats" :key="chat.id" class="list-group-item border-2"
                     :class="{ 'user-chat': chat.user, 'bot-chat': !chat.user }">
                     <strong v-if="chat.user">{{ chat.user.name }}:</strong> {{ chat.chat }}
-                    
                 </li>
             </ul>
         </div>
@@ -21,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -38,7 +37,7 @@ export default {
         async fetchChats() {
             this.loading = true;
             try {
-                const response = await axios.get('/v1/chats_list');
+                const response = await apiService.getChats();
                 this.chats = response.data;
             } catch (error) {
                 console.error('Error fetching chats:', error);
@@ -49,7 +48,7 @@ export default {
         },
         async postChat() {
             try {
-                const response = await axios.post('/v1/chats', { chat: this.newChat });
+                const response = await apiService.postChat(this.newChat);
                 this.chats.push(response.data);
                 this.newChat = '';
                 this.scrollToBottom();
@@ -75,7 +74,6 @@ export default {
 }
 
 .bot-chat {
-
     border-radius: 10px;
     padding: 10px;
     margin-bottom: 5px;

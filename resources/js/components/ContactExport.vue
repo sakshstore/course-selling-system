@@ -1,5 +1,5 @@
 <template>
-    <div   >
+    <div>
         <h2 class="text-primary mb-4">Available Columns</h2>
         <button @click="fetchContactFields" class="btn btn-primary">Fetch Columns</button>
         <div v-if="tableColumns.length" class="mt-4">
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -58,7 +58,7 @@ export default {
     methods: {
         async fetchContactFields() {
             try {
-                const response = await axios.get('/v1/getContactfields');
+                const response = await apiService.getContactFields();
                 this.tableColumns = response.data[0];
             } catch (error) {
                 console.error('Error fetching contact fields:', error);
@@ -66,7 +66,7 @@ export default {
         },
         async fetchContactData() {
             try {
-                const response = await axios.post('/v1/getFilteredContacts', { columns: this.selectedColumns });
+                const response = await apiService.getFilteredContacts(this.selectedColumns);
                 this.fullContactData = response.data;
                 this.contactData = response.data; // Display the first 5 contacts
             } catch (error) {

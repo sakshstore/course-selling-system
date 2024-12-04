@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -92,39 +92,42 @@ export default {
         this.fetchTasks();
     },
     methods: {
-        fetchTasks() {
-            axios.get('/v1/tasks').then(response => {
+        async fetchTasks() {
+            try {
+                const response = await apiService.getTasks();
                 this.tasks = response.data;
-            }).catch(error => {
-                console.error(error);
-            });
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
         },
         goToEditTask(id) {
             this.$router.push(`/tasks/${id}/edit`);
         },
-        deleteTask(id) {
-            axios.delete(`/v1/tasks/${id}`).then(() => {
+        async deleteTask(id) {
+            try {
+                await apiService.deleteTask(id);
                 this.fetchTasks();
-            }).catch(error => {
-                console.error(error);
-            });
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
         },
-        createTask() {
-            axios.post('/v1/tasks', {
-                title: this.title,
-                description: this.description,
-                status: this.status,
-                priority: this.priority
-            }).then(response => {
+        async createTask() {
+            try {
+                const response = await apiService.createTask({
+                    title: this.title,
+                    description: this.description,
+                    status: this.status,
+                    priority: this.priority
+                });
                 this.tasks.push(response.data);
                 this.showModal = false;
                 this.title = '';
                 this.description = '';
                 this.status = 'pending';
                 this.priority = 'medium';
-            }).catch(error => {
-                console.error(error);
-            });
+            } catch (error) {
+                console.error('Error creating task:', error);
+            }
         }
     }
 };

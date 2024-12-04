@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h2 class="mb-4">Create Invoice</h2>
         <div v-if="step === 1">
             <h3>Step 1: Contact and Invoice Details</h3>
@@ -29,8 +29,6 @@
                     <label for="dueDate" class="form-label">Due Date</label>
                     <input v-model="dueDate" type="date" class="form-control" id="dueDate" required />
                 </div>
-
-
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
                     <select v-model="status" class="form-control" id="status" required>
@@ -43,8 +41,6 @@
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
-
-
                 <button type="submit" class="btn btn-primary">Next</button>
             </form>
         </div>
@@ -92,7 +88,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -109,7 +105,6 @@ export default {
             customerNote: '',
             terms: '',
             status: 'draft', // Added this line
-
             file: null
         };
     },
@@ -119,14 +114,14 @@ export default {
     },
     methods: {
         fetchContacts() {
-            axios.get('/v1/contacts_list').then(response => {
+            apiService.getContacts().then(response => {
                 this.contacts = response.data;
             }).catch(error => {
                 console.error(error);
             });
         },
         fetchProducts() {
-            axios.get('/v1/products').then(response => {
+            apiService.getProducts().then(response => {
                 this.allProducts = response.data;
             }).catch(error => {
                 console.error(error);
@@ -159,15 +154,10 @@ export default {
             this.products.forEach((product, index) => {
                 formData.append(`products[${index}][id]`, product.id);
                 formData.append(`products[${index}][quantity]`, product.quantity);
-                formData.append(`products[${index}][price]`, product.price);
                 formData.append(`products[${index}][description]`, product.description);
             });
 
-            axios.post('/invoices', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then(response => {
+            apiService.createInvoice(formData).then(response => {
                 alert('Invoice created successfully!');
                 this.$router.push('/invoices');
             }).catch(error => {

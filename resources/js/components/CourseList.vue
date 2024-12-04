@@ -2,9 +2,9 @@
     <div>
         <h2 class="mb-4">Courses</h2>
 
-       
 
-        <router-link :to="{ name: 'CreateCourse' }"  class="btn btn-info btn-sm  ">Course Form</router-link>
+
+        <router-link :to="{ name: 'CreateCourse' }" class="btn btn-info btn-sm  ">Course Form</router-link>
 
 
 
@@ -99,9 +99,8 @@
         </div>
     </div>
 </template>
-
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -126,17 +125,23 @@ export default {
         this.fetchCourses();
     },
     methods: {
-        fetchCourses() {
-            axios.get('/v1/courses').then(response => {
+        async fetchCourses() {
+            try {
+                const response = await apiService.getCourses();
                 this.courses = response.data;
-            });
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
         },
-        addCourse() {
-            axios.post('/v1/courses', this.currentCourse).then(response => {
+        async addCourse() {
+            try {
+                const response = await apiService.saveCourse(null, this.currentCourse);
                 this.courses.push(response.data);
                 this.resetForm();
                 this.closeModal();
-            });
+            } catch (error) {
+                console.error('Error adding course:', error);
+            }
         },
         openAddModal() {
             this.isEditMode = false;
@@ -148,18 +153,24 @@ export default {
             this.currentCourse = { ...course };
             this.showModal();
         },
-        updateCourse() {
-            axios.put(`/v1/courses/${this.currentCourse.id}`, this.currentCourse).then(response => {
+        async updateCourse() {
+            try {
+                const response = await apiService.saveCourse(this.currentCourse.id, this.currentCourse);
                 const index = this.courses.findIndex(course => course.id === this.currentCourse.id);
                 this.courses.splice(index, 1, response.data);
                 this.resetForm();
                 this.closeModal();
-            });
+            } catch (error) {
+                console.error('Error updating course:', error);
+            }
         },
-        deleteCourse(courseId) {
-            axios.delete(`/v1/courses/${courseId}`).then(() => {
+        async deleteCourse(courseId) {
+            try {
+                await apiService.deleteCourse(courseId);
                 this.courses = this.courses.filter(course => course.id !== courseId);
-            });
+            } catch (error) {
+                console.error('Error deleting course:', error);
+            }
         },
         resetForm() {
             this.currentCourse = {

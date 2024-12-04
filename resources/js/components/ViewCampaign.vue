@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2>Campaign Details</h2>
         <ul class="nav nav-tabs" id="campaignTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     props: ['id'],
@@ -107,7 +107,7 @@ export default {
     methods: {
         async fetchCampaign() {
             try {
-                const response = await axios.get(`/v1/campaign/${this.id}`);
+                const response = await apiService.getCampaign(this.id);
                 this.campaign = response.data;
             } catch (error) {
                 console.error(error);

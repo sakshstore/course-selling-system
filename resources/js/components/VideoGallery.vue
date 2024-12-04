@@ -1,6 +1,5 @@
 <template>
-    <div  >
-
+    <div>
         <div class="row">
             <div class="col-12 mb-4">
                 <div class="ratio ratio-16x9">
@@ -22,7 +21,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
@@ -36,7 +35,7 @@ export default {
     },
     methods: {
         fetchVideos() {
-            axios.get('/v1/videos/latest').then(response => {
+            apiService.getLatestVideos().then(response => {
                 this.videos = response.data;
                 const videoId = this.$route.query.videoId;
                 if (videoId) {

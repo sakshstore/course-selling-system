@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="text-primary">Ticket Details</h2>
         <div v-if="loading" class="text-center mt-3">
             <div class="spinner-border" role="status">
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -65,12 +65,10 @@ export default {
     methods: {
         fetchTicketDetails() {
             const ticketId = this.$route.params.id;
-            axios.get(`/v1/admin/tickets/${ticketId}`)
+            apiService.getTicketDetails(ticketId)
                 .then(response => {
                     this.ticket = response.data;
                     this.loading = false;
-
-                    
                 })
                 .catch(error => {
                     this.error = 'Failed to load ticket details. Please try again later.';
@@ -79,7 +77,7 @@ export default {
         },
         fetchMessages() {
             const ticketId = this.$route.params.id;
-            axios.get(`/v1/admin/tickets/${ticketId}/messages`)
+            apiService.getMessages(ticketId)
                 .then(response => {
                     this.messages = response.data;
                     this.loadingMessages = false;
@@ -91,12 +89,9 @@ export default {
         },
         postMessage() {
             const ticketId = this.$route.params.id;
-            axios.post(`/v1/admin/tickets/${ticketId}/messages`, { message: this.newMessage })
+            apiService.postMessage(ticketId, this.newMessage)
                 .then(response => {
-           
-                
-                    this.newMessage = ''; 
-                   
+                    this.newMessage = '';
                     this.fetchMessages();
                 })
                 .catch(error => {

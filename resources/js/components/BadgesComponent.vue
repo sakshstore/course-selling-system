@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="mb-4">Badges</h2>
         <ul class="list-group mb-4">
             <li v-for="badge in badges" :key="badge.id"
@@ -32,15 +32,12 @@
                     <label class="form-label">Icon URL:</label>
                     <input v-model="newBadge.icon" class="form-control" required />
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label">Event Name:</label>
                     <select v-model="newBadge.event_name" class="form-control" required>
                         <option v-for="event in events" :key="event" :value="event">{{ event }}</option>
                     </select>
                 </div>
-
-
                 <button type="submit" class="btn btn-primary">Create</button>
             </form>
         </div>
@@ -59,15 +56,12 @@
                     <label class="form-label">Icon URL:</label>
                     <input v-model="editingBadge.icon" class="form-control" required />
                 </div>
-
                 <div class="mb-3">
                     <label class="form-label">Event Name:</label>
                     <select v-model="editingBadge.event_name" class="form-control" required>
                         <option v-for="event in events" :key="event" :value="event">{{ event }}</option>
                     </select>
                 </div>
-
-
                 <button type="submit" class="btn btn-primary">Update</button>
             </form>
         </div>
@@ -75,9 +69,7 @@
 </template>
 
 <script>
-
-import axios from 'axios';
-
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -86,31 +78,28 @@ export default {
             newBadge: { name: '', description: '', icon: '', event_name: '' },
             editingBadge: null,
             events: [],
-
             showCreateForm: false
         };
     },
     mounted() {
         this.fetchBadges();
         this.fetchEvents();
-
     },
     methods: {
         fetchBadges() {
-            axios.get('/v1/badges').then(response => {
+            apiService.getBadges().then(response => {
                 this.badges = response.data;
             });
         },
-        fetchEvents() { // Add this method
-            axios.get('/v1/events').then(response => {
+        fetchEvents() {
+            apiService.getEvents().then(response => {
                 this.events = response.data;
             });
         },
-
         createBadge() {
-            axios.post('/v1/badges', this.newBadge).then(response => {
+            apiService.createBadge(this.newBadge).then(response => {
                 this.badges.push(response.data);
-                this.newBadge = { name: '', description: '', icon: '' };
+                this.newBadge = { name: '', description: '', icon: '', event_name: '' };
                 this.showCreateForm = false;
             });
         },
@@ -118,14 +107,14 @@ export default {
             this.editingBadge = { ...badge };
         },
         updateBadge() {
-            axios.put(`/v1/badges/${this.editingBadge.id}`, this.editingBadge).then(response => {
+            apiService.updateBadge(this.editingBadge.id, this.editingBadge).then(response => {
                 const index = this.badges.findIndex(b => b.id === this.editingBadge.id);
                 this.$set(this.badges, index, response.data);
                 this.editingBadge = null;
             });
         },
         deleteBadge(id) {
-            axios.delete(`/v1/badges/${id}`).then(() => {
+            apiService.deleteBadge(id).then(() => {
                 this.badges = this.badges.filter(badge => badge.id !== id);
             });
         }

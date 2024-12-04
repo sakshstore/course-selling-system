@@ -33,7 +33,6 @@
                 <multiselect v-model="selectedTags" :options="tags" :multiple="true" :close-on-select="false"
                     :clear-on-select="false" :preserve-search="true" placeholder="Pick some" label="name"
                     track-by="name" taggable @tag="addTag">
-                   
                 </multiselect>
             </div>
             <div class="mb-3" v-if="recipientType === 'manual'">
@@ -48,8 +47,9 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 import Multiselect from 'vue-multiselect';
+
 export default {
     components: { Multiselect },
     data() {
@@ -70,7 +70,7 @@ export default {
     methods: {
         async fetchTags() {
             try {
-                const response = await axios.get('/v1/tags');
+                const response = await apiService.getTags();
                 this.tags = response.data;
             } catch (error) {
                 console.error('Error fetching tags:', error);
@@ -87,14 +87,15 @@ export default {
                 if (this.recipientType === 'manual') {
                     contacts = this.contacts.split(',').map(contact => contact.trim());
                 }
-                const response = await axios.post('/v1/campaigns', {
+                const campaignData = {
                     type: this.type,
                     subject: this.type === 'email' ? this.subject : null,
                     message: this.message,
                     contacts: contacts,
                     recipientType: this.recipientType,
                     tagIds: this.recipientType !== 'manual' ? this.selectedTags.map(tag => tag.id) : null
-                });
+                };
+                await apiService.createCampaign(campaignData);
                 // Handle success (e.g., show a success message, clear the form, etc.)
                 this.resetForm();
                 alert('Campaign created successfully!');
@@ -115,10 +116,9 @@ export default {
 };
 </script>
 
-<style  >
- 
-.multiselect__tags , .multiselect__select{
-
+<style>
+.multiselect__tags,
+.multiselect__select {
     background-color: inherit !important;
 }
 </style>

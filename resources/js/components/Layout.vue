@@ -18,7 +18,7 @@
         <!-- Sidebar -->
         <div class="sidebar d-none d-lg-block position-fixed top-0 start-0 vh-100 py-3  pb-5 "
             style="width: 250px; margin-top: 56px;">
-            <Sidebar /> 
+            <Sidebar />
         </div>
 
         <!-- Offcanvas Sidebar for Mobile -->

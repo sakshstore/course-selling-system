@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <h2 class="mb-4">Playlists for {{ course.title }}</h2>
 
         <button type="button" class="btn btn-success mt-4" data-bs-toggle="modal" data-bs-target="#addPlaylistModal">
@@ -8,11 +8,7 @@
 
         <div v-for="playlist in playlists" :key="playlist.id" class="mb-4">
             <h3 class="mb-3">{{ playlist.name }}
-
                 <button @click="openAddVideoModal(playlist.id)" class="btn btn-info btn-sm mt-2">Add Video</button>
-      
-
-                sss
             </h3>
             <ul class="list-group">
                 <li v-for="video in playlist.videos" :key="video.id" class="list-group-item">
@@ -82,68 +78,91 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import apiService from '@/apiservice.js';
 
 export default {
-    data() {
-        return {
-            course: {},
-            playlists: [],
-            newPlaylist: {
-                name: ''
-            },
-            newVideo: {
-                title: '',
-                description: '',
-                url: ''
-            },
-            selectedPlaylistId: null
+    setup() {
+        const course = ref({});
+        const playlists = ref([]);
+        const newPlaylist = ref({ name: '' });
+        const newVideo = ref({ title: '', description: '', url: '' });
+        const selectedPlaylistId = ref(null);
+
+        const fetchCourse = async () => {
+            const courseId = this.$route.params.courseId;
+            try {
+                const response = await apiService.getCourseDetails(courseId);
+                course.value = response.data;
+            } catch (error) {
+                console.error('Error fetching course details:', error);
+            }
         };
-    },
-    created() {
-        this.fetchCourse();
-        this.fetchPlaylists();
-    },
-    methods: {
-        fetchCourse() {
+
+        const fetchPlaylists = async () => {
             const courseId = this.$route.params.courseId;
-            axios.get(`/v1/courses/${courseId}`).then(response => {
-                this.course = response.data;
-            });
-        },
-        fetchPlaylists() {
+            try {
+                const response = await apiService.getPlaylists(courseId);
+                playlists.value = response.data;
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
+            }
+        };
+
+        const addPlaylist = async () => {
             const courseId = this.$route.params.courseId;
-            axios.get(`/v1/courses/${courseId}/playlists`).then(response => {
-                this.playlists = response.data;
-            });
-        },
-        addPlaylist() {
-            const courseId = this.$route.params.courseId;
-            axios.post(`/v1/courses/${courseId}/playlists`, this.newPlaylist).then(response => {
-                this.playlists.push(response.data);
-                this.newPlaylist.name = '';
-                // Close the modal
+            try {
+                const response = await apiService.addPlaylist(courseId, newPlaylist.value);
+                playlists.value.push(response.data);
+                newPlaylist.value.name = '';
                 const modal = bootstrap.Modal.getInstance(document.getElementById('addPlaylistModal'));
                 modal.hide();
-            });
-        },
-        addVideo() {
-            const playlistId = this.selectedPlaylistId;
-            axios.post(`/v1/playlists/${playlistId}/videos`, this.newVideo).then(response => {
-                const playlist = this.playlists.find(pl => pl.id === playlistId);
+            } catch (error) {
+                console.error('Error adding playlist:', error);
+            }
+        };
+
+        const addVideo = async () => {
+            const playlistId = selectedPlaylistId.value;
+            try {
+                const response = await apiService.addVideo(playlistId, newVideo.value);
+                const playlist = playlists.value.find(pl => pl.id === playlistId);
                 playlist.videos.push(response.data);
-                this.newVideo = { title: '', description: '', url: '' };
-                // Close the modal
+                newVideo.value = { title: '', description: '', url: '' };
                 const modal = bootstrap.Modal.getInstance(document.getElementById('addVideoModal'));
                 modal.hide();
-            });
-        },
-        openAddVideoModal(playlistId) {
-            this.selectedPlaylistId = playlistId;
+            } catch (error) {
+                console.error('Error adding video:', error);
+            }
+        };
+
+        const openAddVideoModal = (playlistId) => {
+            selectedPlaylistId.value = playlistId;
             const modal = new bootstrap.Modal(document.getElementById('addVideoModal'));
             modal.show();
-        }
-    }
+        };
+
+        onMounted(() => {
+            fetchCourse();
+            fetchPlaylists();
+        });
+
+        return {
+            course,
+            playlists,
+            newPlaylist,
+            newVideo,
+            selectedPlaylistId,
+            fetchCourse,
+            fetchPlaylists,
+            addPlaylist,
+            addVideo,
+            openAddVideoModal,
+        };
+    },
 };
 </script>
- 
+
+<style scoped>
+/* Add any additional styling here */
+</style>

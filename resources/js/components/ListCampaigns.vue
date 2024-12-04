@@ -1,9 +1,7 @@
 <template>
-    <div >
+    <div>
         <h2 class="mb-4">Campaigns</h2>
-
         <button @click="goToCreateCampaign" class="btn btn-primary mb-3">Create Campaign</button>
-
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -30,7 +28,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService.js';
 
 export default {
     data() {
@@ -42,12 +40,13 @@ export default {
         this.fetchCampaigns();
     },
     methods: {
-        fetchCampaigns() {
-            axios.get('/v1/campaigns_list').then(response => {
+        async fetchCampaigns() {
+            try {
+                const response = await apiService.getCampaigns();
                 this.campaigns = response.data;
-            }).catch(error => {
-                console.error(error);
-            });
+            } catch (error) {
+                console.error('Error fetching campaigns:', error);
+            }
         },
         goToCreateCampaign() {
             this.$router.push('/guide/campaigns/create');

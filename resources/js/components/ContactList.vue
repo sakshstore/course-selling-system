@@ -1,20 +1,14 @@
 <template>
     <div>
-
-        <div class="    mb-3">
+        <div class="mb-3">
             <h2 class="mb-4">Contacts</h2>
             <button class="btn btn-info btn-sm me-3" @click="openCreateModal">Add Contact</button>
-
-
-
             <router-link :to="{ name: 'ContactImport' }" class="btn btn-info btn-sm me-3">
-                <i class="fas fa-file-import"></i>Import
+                <i class="fas fa-file-import"></i> Import
             </router-link>
             <router-link :to="{ name: 'ContactExport' }" class="btn btn-info btn-sm me-3">
-                <i class="fas fa-file-export"></i>Export
+                <i class="fas fa-file-export"></i> Export
             </router-link>
-
-
         </div>
         <ul class="list-group">
             <li v-for="contact in contacts" :key="contact.id"
@@ -54,7 +48,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 import ContactForm from './ContactForm.vue';
 
 export default {
@@ -69,8 +63,12 @@ export default {
     },
     methods: {
         async fetchContacts() {
-            const response = await axios.get('/v1/contacts_list');
-            this.contacts = response.data;
+            try {
+                const response = await apiService.getContacts();
+                this.contacts = response.data;
+            } catch (error) {
+                console.error('Error fetching contacts:', error);
+            }
         },
         editContact(contact) {
             this.selectedContactId = contact.id;
@@ -78,10 +76,13 @@ export default {
             this.showCreateContactModal = true;
         },
         async deleteContact(id) {
-            await axios.delete(`/v1/contacts/${id}`);
-            this.fetchContacts();
+            try {
+                await apiService.deleteContact(id);
+                this.fetchContacts();
+            } catch (error) {
+                console.error('Error deleting contact:', error);
+            }
         },
-
         openCreateModal() {
             this.selectedContactId = null;
             this.modalTitle = 'Add Contact';

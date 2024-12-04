@@ -11,7 +11,7 @@
                     <th>Phone</th>
                     <th>Last login</th>
                     <th>Registered At</th>
-                    <th> View </th>
+                    <th>View</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,15 +20,12 @@
                     <td>{{ student.email }}</td>
                     <td>{{ student.phone }}</td>
                     <td>{{ formatTimeAgo(student.last_login_at) }}</td>
-                    <td>{{ formatTimeAgo(student.created_at) }}   
-                    </td>
-<td>
-
+                    <td>{{ formatTimeAgo(student.created_at) }}</td>
+                    <td>
                         <router-link :to="{ name: 'StudentDetails', params: { id: student.id } }"
                             class="btn btn-info btn-sm me-2">
                             <i class="fas fa-eye fixed-width-icon"></i>
-                        </router-link>   
-                    
+                        </router-link>
                     </td>
                 </tr>
             </tbody>
@@ -37,7 +34,11 @@
 </template>
 
 <script>
-import axios from 'axios';
+
+import apiService from '@/apiService';
+
+
+
 import { formatDistanceToNow } from 'date-fns';
 
 export default {
@@ -51,7 +52,7 @@ export default {
     methods: {
         searchStudents() {
             if (this.searchQuery.length > 2) {
-                axios.get(`/v1/students?search=${this.searchQuery}`)
+                apiService.searchStudents(this.searchQuery)
                     .then(response => {
                         this.searchResults = response.data;
                     })

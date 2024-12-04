@@ -68,7 +68,6 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
-
                                     <th scope="col">Last login</th>
                                     <th scope="col">Registered At</th>
                                 </tr>
@@ -76,7 +75,6 @@
                             <tbody>
                                 <tr v-for="student in newStudents.slice(0, 5)" :key="student.id">
                                     <td>{{ student.name }}</td>
-
                                     <td>{{ formatTimeAgo(student.last_login_at) }}</td>
                                     <td>{{ formatTimeAgo(student.created_at) }}</td>
                                 </tr>
@@ -90,7 +88,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 import { formatDistanceToNow } from 'date-fns';
 
 export default {
@@ -113,7 +111,7 @@ export default {
     },
     methods: {
         fetchUserData() {
-            axios.get('/v1/me')
+            apiService.getUserData()
                 .then(response => {
                     this.user = response.data;
                 })
@@ -122,7 +120,7 @@ export default {
                 });
         },
         fetchDashboardData() {
-            axios.get('/v1/dashboard-data')
+            apiService.getDashboardData()
                 .then(response => {
                     this.dashboardData = response.data;
                 })
@@ -131,7 +129,7 @@ export default {
                 });
         },
         fetchWeeklyRegisteredUsers() {
-            axios.get('/v1/weekly-registered-users')
+            apiService.getWeeklyRegisteredUsers()
                 .then(response => {
                     this.weeklyRegisteredUsers = response.data;
                 })
@@ -140,7 +138,7 @@ export default {
                 });
         },
         fetchActivityLogs() {
-            axios.get('/v1/activities')
+            apiService.getActivityLogs()
                 .then(response => {
                     this.activityLogs = response.data;
                 })
@@ -149,7 +147,7 @@ export default {
                 });
         },
         fetchNewStudents() {
-            axios.get('/v1/new-students')
+            apiService.getNewStudents()
                 .then(response => {
                     this.newStudents = response.data;
                 })

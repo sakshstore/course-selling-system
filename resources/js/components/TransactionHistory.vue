@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <div class="card">
             <div class="card-header">
                 Transaction History
@@ -30,7 +30,7 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     setup() {
@@ -38,7 +38,7 @@ export default {
 
         const fetchTransactions = async () => {
             try {
-                const response = await axios.get('/transactions');
+                const response = await apiService.getTransactions();
                 transactions.value = response.data;
             } catch (error) {
                 console.error('Error fetching transactions:', error);
@@ -53,9 +53,4 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.container {
-    max-width: 800px;
-}
-</style>
+ 

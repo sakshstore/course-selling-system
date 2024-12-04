@@ -1,20 +1,22 @@
 <template>
-    <div >
-        <h2 class="mb-4">Course Video Gallery</h2>
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-12 mb-4">
-                <div class="ratio ratio-16x9">
+            <div class="col-md-3 p-3">
+                <h2>Chapters</h2>
+                <ul class="list-group">
+                    <li v-for="video in videos" :key="video.id" class="list-group-item list-group-item-action"
+                        @click="playVideo(video.url, video.id)">
+                        {{ video.title }}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9 p-4">
+                <h2 class="mb-4">{{ currentVideoTitle }}</h2>
+                <div class="ratio ratio-16x9 mb-4">
                     <iframe :src="currentVideoUrl" frameborder="0" allowfullscreen></iframe>
                 </div>
-            </div>
-            <div v-for="video in videos" :key="video.id" class="col-md-4 mb-4">
-                <div class="card">
-                    <img :src="getThumbnailUrl(video.url)" class="card-img-top" @click="playVideo(video.url, video.id)"
-                        alt="Video Thumbnail">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ video.title }}</h5>
-                        <p class="card-text">{{ video.description }}</p>
-                    </div>
+                <div class="mb-4">
+                    <p>{{ currentVideoDescription }}</p>
                 </div>
             </div>
         </div>
@@ -22,13 +24,15 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiservice';
 
 export default {
     data() {
         return {
             videos: [],
-            currentVideoUrl: ''
+            currentVideoUrl: '',
+            currentVideoTitle: '',
+            currentVideoDescription: ''
         };
     },
     created() {
@@ -40,7 +44,7 @@ export default {
     methods: {
         fetchVideos() {
             const courseId = this.$route.params.course_id;
-            axios.get(`/v1/courses/${courseId}/videos`).then(response => {
+            apiService.getVideos(courseId).then(response => {
                 this.videos = response.data;
                 if (this.videos.length > 0) {
                     this.playVideo(this.videos[0].url, this.videos[0].id); // Play the first video by default
@@ -59,16 +63,13 @@ export default {
             return (match && match[2].length === 11) ? match[2] : null;
         },
         playVideo(url, id) {
+            const video = this.videos.find(v => v.id === id);
             const videoId = this.getYoutubeId(url);
             this.currentVideoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            this.currentVideoTitle = video.title;
+            this.currentVideoDescription = video.description;
             this.$router.push({ query: { videoId: id } });
         }
     }
 };
 </script>
-
-<style scoped>
-.card-img-top {
-    cursor: pointer;
-}
-</style>

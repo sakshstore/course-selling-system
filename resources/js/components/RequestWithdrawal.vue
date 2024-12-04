@@ -21,7 +21,9 @@
 
 <script>
 import { ref } from 'vue';
-import axios from 'axios';
+
+import apiService from '@/apiService';
+
 
 export default {
     setup() {
@@ -31,7 +33,7 @@ export default {
 
         const submitRequest = async () => {
             try {
-                const response = await axios.post('/request-withdrawal', { amount: amount.value });
+                const response = await apiService.requestWithdrawal(amount.value);
                 message.value = response.data.message;
                 error.value = '';
             } catch (err) {
@@ -49,5 +51,3 @@ export default {
     },
 };
 </script>
-
- 

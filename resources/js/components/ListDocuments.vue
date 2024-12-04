@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="mb-4">Documents</h2>
         <button @click="showModal = true" class="btn btn-primary mb-3">Create Document</button>
         <table class="table table-striped">
@@ -17,7 +17,7 @@
                     <td>{{ document.title }}</td>
                     <td>{{ document.contents }}</td>
                     <td>
-                         <button @click="deleteDocument(document.id)" class="btn btn-danger btn-sm">Delete</button>
+                        <button @click="deleteDocument(document.id)" class="btn btn-danger btn-sm">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -76,7 +76,7 @@ export default {
                 console.error(error);
             });
         },
-         
+
         deleteDocument(id) {
             axios.delete(`/v1/documents/${id}`).then(() => {
                 this.fetchDocuments();

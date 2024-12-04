@@ -1,5 +1,5 @@
 <template>
-    <div  >
+    <div>
         <h2 class="mb-4">{{ course.title }}</h2>
         <p>{{ course.description }}</p>
         <h3>Playlists</h3>
@@ -21,54 +21,60 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { ref, onMounted } from 'vue';
+import apiService from '@/apiService.js';
 
 export default {
-    data() {
+    setup() {
+        const course = ref({
+            title: '',
+            description: '',
+        });
+        const playlists = ref([]);
+
+        const fetchCourseDetails = async (courseId) => {
+            try {
+                const response = await apiService.getCourseDetails(courseId);
+                course.value = response.data;
+            } catch (error) {
+                console.error('Error fetching course details:', error);
+            }
+        };
+
+        const fetchPlaylists = async (courseId) => {
+            try {
+                const response = await apiService.getPlaylists(courseId);
+                playlists.value = response.data;
+                playlists.value.forEach(playlist => {
+                    fetchVideos(courseId, playlist);
+                });
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
+            }
+        };
+
+        const fetchVideos = async (courseId, playlist) => {
+            try {
+                const response = await apiService.getVideos(courseId, playlist.id);
+                playlist.videos = response.data;
+            } catch (error) {
+                console.error('Error fetching videos:', error);
+            }
+        };
+
+        onMounted(() => {
+            const courseId = 2; // Replace with dynamic course ID if needed
+            fetchCourseDetails(courseId);
+            fetchPlaylists(courseId);
+        });
+
         return {
-            course: {
-                title: '',
-                description: '',
-            },
-            playlists: []
+            course,
+            playlists,
+            fetchCourseDetails,
+            fetchPlaylists,
+            fetchVideos,
         };
     },
-    created() {
-        this.fetchCourseDetails();
-        this.fetchPlaylists();
-    },
-    methods: {
-        fetchCourseDetails() {
-            const courseId = 2; // Replace with dynamic course ID if needed
-            axios.get(`/v1/courses/${courseId}`).then(response => {
-                this.course = response.data;
-            }).catch(error => {
-                console.error('Error fetching course details:', error);
-            });
-        },
-        fetchPlaylists() {
-            const courseId = 2; // Replace with dynamic course ID if needed
-            axios.get(`/v1/courses/${courseId}/playlists`).then(response => {
-                this.playlists = response.data;
-                this.playlists.forEach(playlist => {
-                    this.fetchVideos(playlist);
-                });
-            }).catch(error => {
-                console.error('Error fetching playlists:', error);
-            });
-        },
-        fetchVideos(playlist) {
-            const courseId = 2; // Replace with dynamic course ID if needed
-            axios.get(`/v1/courses/${courseId}/playlists/${playlist.id}/videos`).then(response => {
-                this.$set(playlist, 'videos', response.data);
-            }).catch(error => {
-                console.error('Error fetching videos:', error);
-            });
-        }
-    }
 };
-</script>
-
-<style scoped>
-/* Add any additional styling here */
-</style>
+</script> 

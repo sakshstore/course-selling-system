@@ -46,8 +46,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Vue3TagsInput from 'vue3-tags-input';
+import apiService from '@/apiService';
 
 export default {
     components: {
@@ -79,11 +79,7 @@ export default {
         async saveStudent() {
             this.loading = true;
             try {
-
-
-                console.log(this.studentForm);
-
-                const response = await axios.post('/v1/students', this.studentForm);
+                const response = await apiService.saveStudent(this.studentForm);
                 this.$emit('saved', response.data);
                 this.resetForm();
             } catch (error) {
@@ -95,11 +91,7 @@ export default {
         async updateStudent() {
             this.loading = true;
             try {
-
-                console.log(this.studentForm);
-
-
-                const response = await axios.put(`/v1/students/${this.studentForm.id}`, this.studentForm);
+                const response = await apiService.updateStudent(this.studentForm.id, this.studentForm);
                 this.$emit('saved', response.data);
                 this.resetForm();
             } catch (error) {
@@ -110,8 +102,6 @@ export default {
         },
         updateTags(newTags) {
             this.studentForm.tags = newTags;
-
-            console.log(this.studentForm);
         },
         resetForm() {
             this.studentForm = {
@@ -124,18 +114,10 @@ export default {
         },
         async fetchStudent(id) {
             try {
-                const response = await axios.get(`/v1/students/${id}`);
+                const response = await apiService.fetchStudent(id);
                 const student = response.data;
-
- 
-
-
-                    student.tags = Array.isArray(student.tags) ? student.tags.map(tag => tag.name) : [];
-
-
-                    this.studentForm = student;
-
-
+                student.tags = Array.isArray(student.tags) ? student.tags.map(tag => tag.name) : [];
+                this.studentForm = student;
             } catch (error) {
                 console.error('Error fetching student:', error);
             }

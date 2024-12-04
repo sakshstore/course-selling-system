@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiService from '@/apiService';
 
 export default {
     data() {
@@ -55,34 +55,37 @@ export default {
     },
     methods: {
         fetchCourses() {
-            axios.get('/v1/courses').then(response => {
+            apiService.getCourses().then(response => {
                 this.courses = response.data;
             });
         },
         addCourse() {
-            axios.post('/v1/courses', this.newCourse).then(response => {
+            apiService.saveCourse(null, this.newCourse).then(response => {
                 this.courses.push(response.data);
-                this.newCourse = {
-                    title: '',
-                    description: '',
-                    instructor_id: '',
-                    category: '',
-                    duration: '',
-                    level: '',
-                    price: '',
-                    start_date: '',
-                    end_date: '',
-                    status: 'draft'
-                };
+                this.resetNewCourse();
             });
+        },
+        deleteCourse(courseId) {
+            apiService.deleteCourse(courseId).then(() => {
+                this.courses = this.courses.filter(course => course.id !== courseId);
+            });
+        },
+        resetNewCourse() {
+            this.newCourse = {
+                title: '',
+                description: '',
+                instructor_id: '',
+                category: '',
+                duration: '',
+                level: '',
+                price: '',
+                start_date: '',
+                end_date: '',
+                status: 'draft'
+            };
         },
         editCourse(course) {
             // Implement edit functionality
-        },
-        deleteCourse(courseId) {
-            axios.delete(`/v1/courses/${courseId}`).then(() => {
-                this.courses = this.courses.filter(course => course.id !== courseId);
-            });
         }
     }
 };
