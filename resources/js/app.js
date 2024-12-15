@@ -10,10 +10,10 @@ import BootstrapVue3 from 'bootstrap-vue-3';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
 
 
-import publicRoutes from "./routes/publicRoutes";
-import authRoutes from "./routes/authRoutes";
+ import publicRoutes from "./routes/publicRoutes";
+ import authRoutes from "./routes/authRoutes";
 import guideRoutes from "./routes/guideRoutes";
-import adminRoutes from "./routes/adminRoutes";
+//import adminRoutes from "./routes/adminRoutes";
 
 
 import Utils from './Utils'; // Import the plugin
@@ -33,7 +33,9 @@ mdi,
 },
 });
 
-const routes = [...publicRoutes, ...authRoutes, ...guideRoutes, ...adminRoutes];
+ const routes = [...publicRoutes, ...authRoutes, ...guideRoutes  ];
+
+// const routes = [ ...guideRoutes ];
 
 const router = createRouter({
     history: createWebHistory(),

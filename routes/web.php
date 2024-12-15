@@ -38,11 +38,11 @@ use App\Http\Controllers\WithdrawalController;
 
 */
 use Illuminate\Support\Facades\Route;
-
+Route::middleware('auth')->group(function () {
 include "admin.php";
 
 include "guest.php";
-
+});
 
 Route::prefix('v1')->group(function () {
 

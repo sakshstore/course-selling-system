@@ -1,4 +1,4 @@
-<template> 
+<template>
 <nav class="nav flex-column bg-gradient shadow-lg p-3 vh-100">
     <ul class="nav flex-column">
         <!-- Dashboard -->
@@ -94,6 +94,4 @@
 export default {
     name: 'Sidebar',
 };
-
- 
 </script>

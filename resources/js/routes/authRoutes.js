@@ -3,7 +3,7 @@ import GuestDashboard from "@/components/guest/GuestDashboard.vue";
 import Profile from "@/components/guest/Profile.vue";
 import GuestCourseList from "@/components/guest/GuestCourseList.vue";
 import GuestBuyCourseList from "@/components/guest/GuestBuyCourseList.vue";
-import Chat from "@/components/guest/Chat.vue";
+//import Chat from "@/components/guest/Chat.vue";
 import GuestCourseDetails from "@/components/guest/GuestCourseDetails.vue";
 import GuestBuyCourseDetails from "@/components/guest/GuestBuyCourseDetails.vue";
 import GuestPlayList from "@/components/guest/GuestPlayList.vue";
@@ -39,7 +39,7 @@ const authRoutes = [
                 name: "GuestBuyCourseList",
                 component: GuestBuyCourseList,
             },
-            { path: "chat", name: "Chat", component: Chat },
+//{ path: "chat", name: "Chat", component: Chat },
             {
                 path: "my/courses/:id",
                 name: "GuestCourseDetails",

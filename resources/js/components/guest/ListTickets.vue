@@ -21,7 +21,7 @@
             </div>
             <div>
                 <router-link :to="{ name: 'authTicketDetails', params: { id: ticket.id } }" class="btn btn-info btn-sm me-2">View Ticket</router-link>
-                <button @click="closeTicket(ticket.id)" class="btn btn-danger btn-sm">Close Ticket</button>
+                <button v-if="ticket.status!='closed'" @click="closeTicket(ticket.id)" class="btn btn-danger btn-sm">Close Ticket</button>
             </div>
         </li>
     </ul>
