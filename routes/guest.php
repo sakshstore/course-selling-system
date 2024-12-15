@@ -56,6 +56,9 @@ Route::get('my-courses', [CourseController::class, 'getUserCourses']);
 
 Route::get('courses', [CourseController::class, 'getUserCourses']);
 
+Route::get('courses/{course}', [CourseController::class, 'show']);
+Route::get('courses/{course}/playlists/videos', [PlaylistController::class, 'getPlaylistVideos']);
+
 
 Route::get('recommended-courses', [CourseController::class, 'getRecommendedCourses']);
 Route::get('recently-viewed-courses', [CourseController::class, 'getRecommendedCourses']);
@@ -126,12 +129,14 @@ Route::post('/courses/{courseId}/playlists', [PlaylistController::class, 'store'
 Route::post('/playlists/{playlistId}/study-materials', [PlaylistController::class, 'addStudyMaterial']);
 Route::get('/courses/{courseId}/videos', [VideoController::class, 'getVideosByCourse']);
 Route::get('courses/{courseId}/playlists/{playlistId}/videos', [PlaylistController::class, 'getVideos']);
-Route::post('videos', [VideoController::class, 'store']);
+
+
+//Route::post('videos', [VideoController::class, 'store']);
 Route::get('video/{video}', [VideoController::class, 'get_video']);
-Route::post('video/{video}', [VideoController::class, 'post_video']);
+//Route::post('video/{video}', [VideoController::class, 'post_video']);
 Route::get('get_videos', [VideoController::class, 'get_videos']);
-Route::get('get_unattached_videos', [VideoController::class, 'get_unattached_videos']);
-Route::get('get_attached_videos', [VideoController::class, 'get_attached_videos']);
-Route::post('videos/upload-multiple', [VideoController::class, 'uploadMultipleVideos']);
+//Route::get('get_unattached_videos', [VideoController::class, 'get_unattached_videos']);
+//Route::get('get_attached_videos', [VideoController::class, 'get_attached_videos']);
+//Route::post('videos/upload-multiple', [VideoController::class, 'uploadMultipleVideos']);
 });
 });

@@ -75,15 +75,6 @@ class CourseController extends Controller
         return response()->json(['invoice_id' => $invoice->id]);
     }
 
-    public function getEnrollments()
-    {
-        $enrollments = DB::table('course_user')
-            ->join('users', 'course_user.student_id', '=', 'users.id')
-            ->join('courses', 'course_user.course_id', '=', 'courses.id')
-            ->select('courses.id as course_id', 'courses.title as course_title', 'users.id as student_id', 'users.name as student_name')
-            ->get();
-
-        return response()->json($enrollments);
-    }
+  
 
 }

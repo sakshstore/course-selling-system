@@ -91,7 +91,7 @@ Route::prefix('settings')->group(function () {
     
     // Campaign Routes
     Route::resource('campaigns', CampaignController::class);
-    Route::post('campaigns/{campaignId}/duplicate', [CampaignController::class, 'duplicate']);
+    Route::post('campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);
     
     // Product Routes
     Route::resource('products', ProductController::class);
@@ -129,6 +129,16 @@ Route::prefix('settings')->group(function () {
     Route::get('get_attached_videos', [VideoController::class, 'get_attached_videos']);
     Route::get('videos/latest', [VideoController::class, 'getLastThreeVideos']);
     
+Route::post('videos', [VideoController::class, 'store']);
+Route::get('video/{video}', [VideoController::class, 'get_video']);
+Route::post('video/{video}', [VideoController::class, 'post_video']);
+Route::get('get_videos', [VideoController::class, 'get_videos']);
+Route::get('get_unattached_videos', [VideoController::class, 'get_unattached_videos']);
+Route::get('get_attached_videos', [VideoController::class, 'get_attached_videos']);
+Route::post('videos/upload-multiple', [VideoController::class, 'uploadMultipleVideos']);
+
+
+
     // Notification Routes
     Route::resource('notifications', NotificationController::class);
     

@@ -2,38 +2,32 @@ import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
 
- 
+import BootstrapVue3 from "bootstrap-vue-3";
 
+import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 
-import BootstrapVue3 from 'bootstrap-vue-3';
- 
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
-
-
- import publicRoutes from "./routes/publicRoutes";
- import authRoutes from "./routes/authRoutes";
+import publicRoutes from "./routes/publicRoutes";
+import authRoutes from "./routes/authRoutes";
 import guideRoutes from "./routes/guideRoutes";
 //import adminRoutes from "./routes/adminRoutes";
 
+import Utils from "./Utils"; // Import the plugin
 
-import Utils from './Utils'; // Import the plugin
-
-
-import { createVuetify } from 'vuetify';
-import 'vuetify/styles';
-import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import { createVuetify } from "vuetify";
+import "vuetify/styles";
+import { aliases, mdi } from "vuetify/iconsets/mdi";
 
 const vuetify = createVuetify({
-icons: {
-defaultSet: 'mdi',
-aliases,
-sets: {
-mdi,
-},
-},
+    icons: {
+        defaultSet: "mdi",
+        aliases,
+        sets: {
+            mdi,
+        },
+    },
 });
 
- const routes = [...publicRoutes, ...authRoutes, ...guideRoutes  ];
+const routes = [...publicRoutes, ...authRoutes, ...guideRoutes];
 
 // const routes = [ ...guideRoutes ];
 
@@ -109,7 +103,7 @@ function sss2redirectToDashboard(to, next, dashboardPath) {
 const app = createApp(App);
 app.use(router);
 app.use(BootstrapVue3);
- 
+
 app.use(vuetify);
 app.use(Utils);
 

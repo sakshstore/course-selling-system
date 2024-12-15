@@ -22,7 +22,10 @@ class Playlist extends Model
         return $this->belongsTo(User::class);
     }
 
- 
+    public function videos()
+    {
+    return $this->hasMany(Video::class);
+    }
 
     public function studyMaterials()
 {

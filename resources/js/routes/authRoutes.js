@@ -39,7 +39,7 @@ const authRoutes = [
                 name: "GuestBuyCourseList",
                 component: GuestBuyCourseList,
             },
-//{ path: "chat", name: "Chat", component: Chat },
+            //{ path: "chat", name: "Chat", component: Chat },
             {
                 path: "my/courses/:id",
                 name: "GuestCourseDetails",
@@ -86,6 +86,14 @@ const authRoutes = [
                 name: "CourseVideoGallery",
                 component: CourseVideoGallery,
             },
+
+            {
+                path: "/courses/:course_id/videos/:video_id",
+                name: "CourseWithVideo",
+                component: CourseVideoGallery,
+                props: true,
+            },
+
             { path: "tickets", name: "ListTickets", component: ListTickets },
             {
                 path: "ticket/:id",

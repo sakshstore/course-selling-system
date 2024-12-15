@@ -30,6 +30,8 @@ import VideoUpload from "@/components/guide/VideoUpload.vue";
 import PlayVideos from "@/components/guide/PlayVideos.vue";
 
 
+
+
 import VideoList from "@/components/guide/VideoList.vue";
 import EditVideo from "@/components/guide/EditVideo.vue";
 import StudentsList from "@/components/guide/StudentsList.vue";
@@ -138,6 +140,7 @@ const guideRoutes = [
                 name: "Playlists",
                 component: Playlist,
             },
+         
             {
                 path: "courses/:id",
                 name: "CourseDetails",

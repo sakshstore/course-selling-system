@@ -14,8 +14,14 @@ export default {
     verifyOtp(email, otp) {
         return apiClient.post("/guest/verify-otp", { email, otp });
     },
+
+    
+    getCourseAndPlaylists(courseId) {
+        return apiClient.get(`/courses/${courseId}/playlists/videos`);
+    },
+
     getPlaylists(courseId) {
-        return apiClient.get(`/courses/${courseId}/playlists`);
+        return apiClient.get(`/courses/${courseId}/playlists/videos`);
     },
     getChats() {
         return apiClient.get("/chats_list");

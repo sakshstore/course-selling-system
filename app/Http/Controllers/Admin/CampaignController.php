@@ -113,10 +113,13 @@ class CampaignController extends Controller
 
     public function duplicate(Campaign $campaign)
     {
+ 
 // Duplicate the campaign
         $newCampaign = $campaign->replicate();
         $newCampaign->created_at = now();
         $newCampaign->updated_at = now();
+
+        $newCampaign->user_id =auth()->id() ;
 
   
 
