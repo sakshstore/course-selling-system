@@ -1,72 +1,64 @@
 <?php
 
-
-
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Listeners\LogActivity;
-use App\Events\UserLoggedIn;
-use App\Events\CourseViewed;
-use App\Events\CourseCreated;
-use App\Events\CourseUpdated;
-use App\Events\CourseDeleted;
-use App\Events\VideoCreated;
+use App\Events\AdminLoggedIn;
 use App\Events\ChatCreated;
+use App\Events\CourseCreated;
+use App\Events\CourseDeleted;
+use App\Events\CourseUpdated;
+use App\Events\CourseViewed;
 use App\Events\LeadCreated;
-use App\Events\LeadUpdated;
 use App\Events\LeadDeleted;
-
+use App\Events\LeadUpdated;
 use App\Events\StudentEnrolled;
-
+use App\Events\StudentRemoved;
+use App\Events\UserLoggedIn;
+use App\Events\VideoCreated;
+use App\Listeners\LogActivity;
 use App\Listeners\LogLoginHistory;
 use App\Listeners\SendAdminLoginNotification;
+use App\Listeners\SendNotification;
 
 
 
-use App\Events\AdminLoggedIn;
-use App\Events\StudentRemoved;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
 
-     
         AdminLoggedIn::class => [
-        
+
             SendAdminLoginNotification::class,
-            ],
-
-
+        ],
 
         StudentEnrolled::class => [
             SendEnrollmentNotification::class,
-                    ],
-            
-            
-                    StudentRemoved::class => [
-                   SendRemovalNotification::class,
-                    ],
-            
-                    StudentEnrolled::class => [
-                        LogActivity::class,
-                                ],
-                        
-                        
-                                StudentRemoved::class => [
-                                    LogActivity::class,
-                                ],
-                          
+        ],
 
-        UserLoggedIn::class => [
+        StudentRemoved::class => [
+            SendRemovalNotification::class,
+        ],
+
+        StudentEnrolled::class => [
             LogActivity::class,
         ],
 
+        StudentRemoved::class => [
+            LogActivity::class,
+        ],
+
+        
+
+
         UserLoggedIn::class => [
-            LogLoginHistory::class,
+        LogActivity::class,
+          LogLoginHistory::class,
+
+           SendNotification::class,
             ],
-
-
+            
         CourseViewed::class => [
             LogActivity::class,
         ],

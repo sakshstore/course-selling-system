@@ -23,6 +23,7 @@
         "@vueform/multiselect": "^2.6.11",
         "@vueuse/core": "^11.2.0",
         "bootstrap": "^5.3.3",
+        "bootstrap-vue": "^2.23.1",
         "bootstrap-vue-3": "^0.5.1",
         "date-fns": "^4.1.0",
         "filepond": "^4.32.1",
@@ -40,9 +41,10 @@
         "vue-multiselect": "^3.1.0",
         "vue-pagination-2": "^3.1.0",
         "vue-router": "^4.0.13",
+        "vue-toastification": "^2.0.0-rc.5",
         "vue-youtube-embed": "^2.2.2",
         "vue3-tags-input": "^1.0.12",
         "vuedraggable": "^4.1.0",
-        "vuetify": "^3.7.3"
+        "vuetify": "^3.7.0-beta.1"
     }
 }

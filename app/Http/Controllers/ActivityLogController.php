@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
-namespace App\Http\Controllers;
+ 
 
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
@@ -20,17 +19,6 @@ class ActivityLogController extends Controller
 
 
 
-    
-public function events()
-{
-$eventFiles = File::allFiles(app_path('Events'));
-$events = [];
 
-foreach ($eventFiles as $file) {
-$events[] =   pathinfo($file)['filename'];
-}
-return response()->json($events);
-
-} 
 
 } 

@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -12,55 +8,59 @@ use Illuminate\Notifications\Notification;
 
 class UserNotification extends Notification implements ShouldQueue
 {
-use Queueable;
+    use Queueable;
 
-protected $message;
-
-/**
-* Create a new notification instance.
-*
-* @param string $message
-*/
-public function __construct($message)
-{
-$this->message = $message;
-}
+    protected $message;
+    protected $subject;
 
 /**
-* Get the notification's delivery channels.
-*
-* @param mixed $notifiable
-* @return array
-*/
-public function via($notifiable)
-{
-return ['mail', 'database'];
-}
+ * Create a new notification instance.
+ *
+ * @param array $data
+ */
+    public function __construct($data)
+    {
+        $this->subject = $data['subject'];
+        $this->message = $data['message'];
+    }
 
 /**
-* Get the mail representation of the notification.
-*
-* @param mixed $notifiable
-* @return \Illuminate\Notifications\Messages\MailMessage
-*/
-public function toMail($notifiable)
-{
-return (new MailMessage)
-->line($this->message)
-->action('Notification Action', url('/'))
-->line('Thank you for using our application!');
-}
+ * Get the notification's delivery channels.
+ *
+ * @param mixed $notifiable
+ * @return array
+ */
+    public function via($notifiable)
+    {
+        return ['mail', 'database'];
+    }
 
 /**
-* Get the array representation of the notification.
-*
-* @param mixed $notifiable
-* @return array
-*/
-public function toArray($notifiable)
-{
-return [
-'message' => $this->message,
-];
-}
+ * Get the mail representation of the notification.
+ *
+ * @param mixed $notifiable
+ * @return \Illuminate\Notifications\Messages\MailMessage
+ */
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject($this->subject) // Set the subject line
+            ->line($this->message)
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
+    }
+
+/**
+ * Get the array representation of the notification.
+ *
+ * @param mixed $notifiable
+ * @return array
+ */
+    public function toArray($notifiable)
+    {
+        return [
+            'subject' => $this->subject,
+            'message' => $this->message,
+        ];
+    }
 }

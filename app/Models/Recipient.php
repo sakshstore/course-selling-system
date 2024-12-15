@@ -9,8 +9,11 @@ class Recipient extends Model
 use HasFactory;
 
 protected $fillable = [
-'contact', 'campaign_id'
+'contact', 'campaign_id', 'status'
 ];
+ 
+
+
 
 public function campaign()
 {

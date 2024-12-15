@@ -1,5 +1,7 @@
 
 @import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'vue-toastification/dist/index.css';
+
 
   /*
  body{
@@ -112,3 +114,8 @@ margin-left: 250px;
 max-width: calc(100% - 250px);
 }
 } 
+
+
+
+
+

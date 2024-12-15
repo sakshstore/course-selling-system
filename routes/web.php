@@ -1,8 +1,13 @@
 <?php
 
+
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SystemController;
+/*
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AdminTicketController;
-use App\Http\Controllers\Auth\LoginController;
+
+
 use App\Http\Controllers\BadgeController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\ChatController;
@@ -20,49 +25,107 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\SettingsController;
+
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudyMaterialController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\WithdrawalController;
- 
 
-use App\Http\Controllers\TagController;
-
-
+*/
 use Illuminate\Support\Facades\Route;
 
+include "admin.php";
+
+include "guest.php";
+
+
+Route::prefix('v1')->group(function () {
+
+
+Route::prefix('auth')->group(function () {
+    Route::post('send-otp', [LoginController::class, 'sendAuthOtp']);
+    Route::post('verify-otp', [LoginController::class, 'verifyAuthOtp']);
+    });
+
+
+
+    Route::prefix('guide')->group(function () {
+    Route::post('send-otp', [LoginController::class, 'sendAuthOtp']);
+    Route::post('verify-otp', [LoginController::class, 'verifyGuideOTP']);
+    });
+
+
+    Route::prefix('admin')->group(function () {
+    Route::post('send-otp', [LoginController::class, 'sendAdminOTP']);
+    Route::post('verify-otp', [LoginController::class, 'verifyAdminOTP']);
+    });
+
+});
+
+
+
+Route::any('logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::prefix('v1')->group(function () {
+
+    Route::get('settings/currency-symbol', [SystemController::class, 'getCurrencySymbol']);
+
+    Route::get('settings/brand-settings', [SystemController::class, 'getBrandSettings']);
+
+    Route::get('settings/SectionsText', [SystemController::class, 'getSectionsText']);
+
+
+
+});
+/*
+ 
 Route::prefix('v1/guest')->group(function () {
+
+
+
+
 
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 
     Route::get('/videos/latest', [VideoController::class, 'getLastThreeVideos']);
     // Authentication Routes
     Route::post('login', [LoginController::class, 'login'])->name('login3');
-    Route::post('send-otp', [LoginController::class, 'sendOtp']);
-    Route::post('verify-otp', [LoginController::class, 'verifyGuestOtp']);
+  
 
-    Route::get('setup', [LoginController::class, 'setup'])->name('setup');
+    
+
+
+    Route::get('setup', [LoginController::class, 'test'])->name('setup');
 
 });
+
+
+
 
 Route::any('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::prefix('v1')->group(function () {
+
+    Route::get('settings/currency-symbol', [SystemController::class, 'getCurrencySymbol']);
+
+    Route::get('settings/brand-settings', [SystemController::class, 'getBrandSettings']);
+
+    Route::get('settings/SectionsText', [SystemController::class, 'getSectionsText']);
+
     Route::get('', [LoginController::class, 'showLoginFor'])->name('login2');
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 
     Route::get('/videos/latest', [VideoController::class, 'getLastThreeVideos']);
     // Authentication Routes
     Route::post('login', [LoginController::class, 'login'])->name('login3');
-    Route::post('send-otp', [LoginController::class, 'sendOtp']);
-    Route::post('verify-otp', [LoginController::class, 'verifyOtp']);
-    Route::post('admin-send-otp', [LoginController::class, 'adminsendOtp']);
-    Route::post('admin-verify-otp', [LoginController::class, 'adminverifyOtp']);
+
+
+
 
     Route::post('register', [RegisterController::class, 'register']);
 
@@ -106,9 +169,29 @@ Route::prefix('v1')->group(function () {
 
         Route::get('transactions', [TransactionController::class, 'fetchTransactions'])->name('fetch.transactions');
 
-        Route::get('settings/currency-symbol', [SettingsController::class, 'getCurrencySymbol']);
+        Route::get('settings/currency-symbol', [SystemController::class, 'getCurrencySymbol']);
 
-        Route::post('settings', [SettingsController::class, 'updateSettings']);
+        Route::post('settings/currency-symbol', [SystemController::class, 'updateCurrencySymbol']);
+
+        Route::get('settings/SectionsText', [SystemController::class, 'getSectionsText']);
+
+        Route::post('settings/SectionsText', [SystemController::class, 'postSectionsText']);
+
+        Route::post('settings', [SystemController::class, 'updateSettings']);
+
+        Route::get('/smtp-settings', [SystemController::class, 'getSMTP']);
+        Route::post('/smtp-settings', [SystemController::class, 'saveSMTP']);
+        Route::post('/smtp-settings/test', [SystemController::class, 'testSmtpSettings']);
+
+        Route::post('settings/saveloginBanner', [SystemController::class, 'saveloginBanner']);
+
+        Route::post('settings/savecompanyLogo', [SystemController::class, 'savecompanyLogo']);
+
+        Route::get('settings/api-key-settings', [SystemController::class, 'getApikeySettings']);
+        Route::post('settings/api-key-settings', [SystemController::class, 'saveApikeySettings']);
+
+        Route::get('/brand-settings', [SystemController::class, 'getBrandSettings']);
+        Route::post('/brand-settings', [SystemController::class, 'saveBrandSettings']);
 
         Route::get('event-scores', [EventScoreController::class, 'index']);
         Route::post('event-scores', [EventScoreController::class, 'store']);
@@ -121,8 +204,6 @@ Route::prefix('v1')->group(function () {
         Route::get('me', [ProfileController::class, 'show']);
 
         Route::get('getToken', [ProfileController::class, 'getToken']);
-
-
 
         Route::get('weekly-registered-users', [UserController::class, 'getWeeklyRegisteredUsers']);
 
@@ -182,6 +263,23 @@ Route::prefix('v1')->group(function () {
 
         Route::get('getContactfields', [ContactController::class, 'getContactfields']);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Ticket Routes
 
         Route::resource('tickets', TicketController::class);
@@ -190,18 +288,31 @@ Route::prefix('v1')->group(function () {
 
         // Message Routes
         Route::get('/tickets/{ticketId}/messages', [TicketController::class, 'getMessages']);
+        
         Route::post('/tickets/{ticketId}/messages', [TicketController::class, 'postMessage']);
 
         Route::prefix('admin')->group(function () {
             Route::resource('tickets', AdminTicketController::class);
             Route::get('/tickets_list', [AdminTicketController::class, 'index']);
-            Route::get('/ticket-categories-priorities', [AdminTicketController::class, 'getCategoriesAndPriorities']);
+            Route::get('/ticket-categories-priorities', [TicketController::class, 'getCategoriesAndPriorities']);
 
             // Message Routes
             Route::get('/tickets/{ticketId}/messages', [AdminTicketController::class, 'getMessages']);
             Route::post('/tickets/{ticketId}/messages', [AdminTicketController::class, 'postMessage']);
 
         });
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Chat Routes
         Route::get('/chats_list', [ChatController::class, 'index']);
@@ -211,9 +322,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/campaigns_list', [CampaignController::class, 'index']);
         Route::post('/campaigns', [CampaignController::class, 'store']);
         Route::get('/campaign/{campaign}', [CampaignController::class, 'show']);
-
+        Route::post('/campaigns/{campaign}/duplicate', [CampaignController::class, 'duplicate']);
+        
         Route::get('/tags', [TagController::class, 'index']);
-
 
         // Task Routes
         Route::resource('tasks', TaskController::class)->except(['create', 'edit']);
@@ -232,6 +343,7 @@ Route::prefix('v1')->group(function () {
 
         // Lead Routes
         Route::get('/leads_list', [LeadController::class, 'index']);
+
         Route::get('/get_lead_status', [LeadController::class, 'get_lead_status']);
 
         Route::get('/leads/{lead}', [LeadController::class, 'getlead']);
@@ -239,10 +351,13 @@ Route::prefix('v1')->group(function () {
         Route::put('/leads/{lead}', [LeadController::class, 'update']);
         Route::delete('/leads/delete_all', [LeadController::class, 'deleteAll']);
 
-
         Route::put('/leads/updateStatus/{lead}', [LeadController::class, 'updateStatus']);
         Route::delete('/leads/{lead}', [LeadController::class, 'destroy']);
         Route::post('/leads/bulk_create', [LeadController::class, 'bulkCreate']);
+
+        Route::get('/lead/report-by-tags', [LeadController::class, 'dashboardData']);
+
+        Route::get('/lead/dashboard_data', [LeadController::class, 'dashboardData']);
 
         // Profile Routes
         Route::get('/me', [ProfileController::class, 'show']);
@@ -261,9 +376,13 @@ Route::prefix('v1')->group(function () {
         Route::put('/invoices/{id}/products', [InvoiceController::class, 'updateProducts']);
         Route::post('/invoices/{id}/file', [InvoiceController::class, 'updateFile']);
 
+
+
+        Route::prefix('admin')->group(function () {
+
+
         // Course and Study Material Routes
         Route::resource('courses', CourseController::class);
- 
 
         Route::prefix('courses/{course}/study-materials')->group(function () {
             Route::get('/', [StudyMaterialController::class, 'index']);
@@ -288,6 +407,8 @@ Route::prefix('v1')->group(function () {
         Route::get('video/{video}', [VideoController::class, 'get_video']);
         Route::post('video/{video}', [VideoController::class, 'post_video']);
         Route::get('get_videos', [VideoController::class, 'get_videos']);
+        Route::get('get_unattached_videos', [VideoController::class, 'get_unattached_videos']);
+        Route::get('get_attached_videos', [VideoController::class, 'get_attached_videos']);
 
         Route::get('my-courses', [CourseController::class, 'getUserCourses']);
 
@@ -296,6 +417,13 @@ Route::prefix('v1')->group(function () {
         Route::get('recommended-courses', [CourseController::class, 'getRecommendedCourses']);
 
         Route::get('recently-viewed-courses', [CourseController::class, 'getRecommendedCourses']);
+
+
+    });
+
+
+
+
 
         // Admin Routes
         Route::group(['middleware' => ['role:admin']], function () {
@@ -310,6 +438,8 @@ Route::prefix('v1')->group(function () {
 
     });
 });
+
+*/
 
 if (!request()->is('v1/*')) {
 
@@ -326,3 +456,5 @@ Route::get('/v1/home', function () {
 Route::get('/v1/home2', function () {
     return view('landingpage_2');
 });
+
+Route::get('/v1/test', [LoginController::class, 'test'])->name('test'); 

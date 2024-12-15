@@ -10,20 +10,28 @@ class ScoreHistory extends Model
     use HasFactory;
 
     protected $fillable = [
-        'student_id',
+        'user_id',
         'increment',
         'event',
         'description',
         'updated_by',
     ];
 
+    
     public function student()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Student::class,"user_id");
     }
 
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
+    public function user()
+{
+return $this->belongsTo(User::class, 'user_id');
+}
+
+public function updatedBy()
+{
+return $this->belongsTo(User::class, 'updated_by');
+}
+
+ 
 }

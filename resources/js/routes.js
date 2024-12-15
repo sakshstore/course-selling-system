@@ -91,6 +91,8 @@ import ContactImport from '@/components/ContactImport.vue';
 
 import ContactExport from '@/components/ContactExport.vue';
 
+import SmtpSettings from '@/components/SmtpSettings.vue';
+ 
 
 
 const routes = [
@@ -199,6 +201,8 @@ const routes = [
 
   { path: 'contact-import', name: 'ContactImport', component: ContactImport },
   { path: 'contact-export', name: 'ContactExport', component: ContactExport },
+
+  { path: 'smtp-settings', name: 'SmtpSettings', component: SmtpSettings },
 
 
   
